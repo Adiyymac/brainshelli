@@ -14,7 +14,11 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1' # Only for testing in localhost
 
 app = Flask(__name__)
 app.secret_key = 'brinshell_super_secret_key'
+# UPLOAD_FOLDER പാത്ത് മാറ്റുക 
+UPLOAD_FOLDER = '/tmp/uploads'
 
+# ഇപ്പോൾ ഈ കോഡ് പ്രവർത്തിക്കും
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 UPLOAD_FOLDER = 'static/videos'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
