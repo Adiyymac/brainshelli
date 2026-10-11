@@ -13,7 +13,7 @@ import razorpay
 import cloudinary
 import cloudinary.uploader
 
-app = Flask(__name__)
+app = Flask(__name__, instance_path='/tmp')
 # Vercel Environment Variables-ൽ നിന്ന് Secret Key എടുക്കുന്നു
 app.secret_key = os.getenv('SECRET_KEY', 'brinshell_super_secret_key')
 
