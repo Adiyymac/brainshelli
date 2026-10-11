@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ plan.upper() }} Portal - BRIN SHELL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glass-panel { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #111827; }
+        ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    </style>
+</head>
+<body class="bg-gray-950 text-white font-sans min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="glass-panel sticky top-0 z-50 px-6 py-4 flex justify-between items-center shadow-lg">
+        <div class="flex items-center gap-4">
+            <h1 class="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-500">BRIN SHELL</h1>
+            <span class="bg-indigo-600/20 text-indigo-400 px-3 py-1 rounded-full text-xs font-bold border border-indigo-500/30">{{ plan.upper() }} BATCH</span>
+        </div>
+        <a href="/logout" class="text-sm font-semibold text-gray-400 hover:text-red-400 transition">Logout</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-grow max-w-7xl mx-auto w-full p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Left Side: Video Player, Profile & Messages -->
+        <div class="lg:col-span-2 space-y-6">
+            
+            <!-- User Profile & Progress Bar -->
+            <div class="glass-panel p-5 rounded-2xl flex flex-col md:flex-row items-center gap-6 border-l-4 border-indigo-500">
+                <img src="https://ui-avatars.com/api/?name={{ user.email }}&background=4f46e5&color=fff&size=64" alt="Profile" class="w-16 h-16 rounded-full shadow-lg border-2 border-indigo-500/50">
+                <div class="flex-grow w-full">
+                    <h3 class="text-xl font-bold text-white mb-1">Welcome back, {{ user.email.split('@')[0] }}!</h3>
+                    <p class="text-xs text-gray-400 mb-3">Keep going! You're making great progress.</p>
+                    
+                    <div class="flex justify-between text-xs mb-1 font-bold">
+                        <span class="text-gray-300">Course Progress</span>
+                        <span class="text-indigo-400">{{ progress }}% Completed</span>
+                    </div>
+                    <!-- Dynamic Progress Bar -->
+                    <div class="h-2.5 w-full bg-gray-800 rounded-full overflow-hidden shadow-inner">
+                        <div class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-1000 ease-out rounded-full" style="width: {{ progress }}%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            {% if active_video %}
+            
+            <!-- SECURE HLS VIDEO PLAYER -->
+            <div class="w-full bg-black rounded-2xl overflow-hidden shadow-2xl border border-gray-800 relative aspect-video" oncontextmenu="return false;">
+                <video id="securePlayer" controls controlsList="nodownload noplaybackrate" disablePictureInPicture class="w-full h-full outline-none"></video>
+            </div>
+
+            <!-- Details & Actions -->
+            <div class="glass-panel p-6 rounded-2xl">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold">{{ active_video.title }}</h2>
+                        <p class="text-gray-400 text-sm mt-1">{{ active_video.section }}</p>
+                    </div>
+                    
+                    <!-- Mark as Completed Form -->
+                    <form action="/complete_video" method="POST">
+                        <input type="hidden" name="current_order" value="{{ active_video.order_num }}">
+                        {% if user.current_video_order == active_video.order_num %}
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 px-6 py-2 rounded-xl text-sm font-bold shadow-[0_0_15px_rgba(79,70,229,0.3)]">
+                            Mark as Completed
+                        </button>
+                        {% else %}
+                        <button disabled class="bg-green-600/50 text-white px-6 py-2 rounded-xl text-sm font-bold cursor-not-allowed">
+                            Completed ✓
+                        </button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+
+            <!-- Community Messages & Feedback Section -->
+            <div class="glass-panel p-6 rounded-2xl">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-gray-800">
+                    <div>
+                        <h3 class="text-xl font-bold text-white tracking-wide">Community Discussions</h3>
+                        <p class="text-gray-400 text-sm mt-1">Ask doubts and discuss with other students.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="px-4 py-1.5 rounded-full bg-indigo-600 text-white text-xs font-bold shadow-md transition">All Messages</button>
+                    </div>
+                </div>
+
+                <!-- Post a New Message Form (Dynamic Database Version) -->
+                <form action="/post_message" method="POST" class="mb-6 bg-gray-900/40 p-4 rounded-xl border border-gray-800">
+                    <textarea name="content" required class="w-full bg-gray-950 border border-gray-700 rounded-lg p-3 text-white text-sm focus:outline-none focus:border-indigo-500 mb-3 custom-scrollbar" rows="2" placeholder="Write your doubt or share your feedback here..."></textarea>
+                    <div class="flex justify-end">
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg text-xs font-bold transition">Post Message</button>
+                    </div>
+                </form>
+                
+                <!-- Dynamic Messages List from Database -->
+                <div class="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                    {% for msg in messages %}
+                    <div class="p-4 rounded-xl bg-gray-900/50 border border-gray-800">
+                        <div class="flex justify-between items-center mb-3">
+                            <div class="flex items-center gap-3">
+                                <img src="https://ui-avatars.com/api/?name={{ msg.user_email }}&background=312e81&color=fff&size=32" alt="Profile" class="w-8 h-8 rounded-full border border-indigo-900">
+                                <span class="font-semibold text-gray-200 text-sm">{{ msg.user_email.split('@')[0] }}</span>
+                            </div>
+                            <span class="text-[11px] text-gray-500 font-medium">
+                                {{ msg.timestamp.strftime('%d %b, %H:%M') if msg.timestamp else 'Just now' }}
+                            </span>
+                        </div>
+                        <p class="text-gray-300 text-sm leading-relaxed pl-11">{{ msg.content }}</p>
+                        
+                        {% if msg.admin_reply %}
+                        <!-- Admin/Mentor Reply -->
+                        <div class="ml-11 mt-4 p-3 rounded-lg bg-indigo-900/20 border-l-2 border-indigo-500">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="bg-indigo-600 text-white text-[10px] px-2 py-0.5 rounded font-bold">Admin</span>
+                                <span class="text-xs text-gray-400">BRIN SHELL Mentor</span>
+                            </div>
+                            <p class="text-indigo-200 text-sm">{{ msg.admin_reply }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <p class="text-gray-500 text-sm text-center py-4">No messages yet. Be the first to ask a doubt!</p>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            {% else %}
+            <div class="glass-panel p-10 rounded-2xl text-center border-dashed border-2 border-gray-700">
+                <h2 class="text-2xl font-bold text-gray-400">No Classes Available</h2>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Side: Section-wise Playlist -->
+        <div class="lg:col-span-1">
+            <div class="glass-panel rounded-2xl p-5 sticky top-24 h-[calc(100vh-8rem)] overflow-hidden flex flex-col">
+                <h3 class="text-xl font-bold mb-4">Course Modules</h3>
+                
+                <div class="overflow-y-auto pr-2 space-y-4 flex-grow custom-scrollbar">
+                    {% for sec_name, sec_videos in sections.items() %}
+                    <div class="mb-4">
+                        <h4 class="text-indigo-400 text-sm font-bold mb-2 uppercase tracking-wider">{{ sec_name }}</h4>
+                        <div class="space-y-2">
+                            {% for v in sec_videos %}
+                                {% if v.order_num <= user.current_video_order %}
+                                <!-- Unlocked Video -->
+                                <a href="?v={{ v.order_num }}" class="block">
+                                    <div class="p-3 rounded-xl border {{ 'bg-indigo-900/40 border-indigo-500' if active_video.id == v.id else 'bg-gray-800/80 border-gray-700 hover:bg-gray-700' }} transition flex gap-3 items-center">
+                                        <div class="w-10 h-8 bg-black rounded flex items-center justify-center flex-shrink-0 text-indigo-400 text-xs font-bold">{{ v.order_num }}</div>
+                                        <div class="flex-grow overflow-hidden">
+                                            <h4 class="text-sm font-semibold text-gray-200 truncate">{{ v.title }}</h4>
+                                        </div>
+                                    </div>
+                                </a>
+                                {% else %}
+                                <!-- Locked Video -->
+                                <div class="bg-gray-900/50 p-3 rounded-xl border border-gray-800 opacity-50 flex gap-3 items-center cursor-not-allowed">
+                                    <div class="w-10 h-8 bg-black rounded flex items-center justify-center flex-shrink-0 text-gray-600">🔒</div>
+                                    <div class="flex-grow">
+                                        <h4 class="text-sm font-semibold text-gray-400">Locked Class</h4>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<!-- HLS.js Security Script & Context Menu Block -->
+{% if active_video %}
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script>
+    // Secure Video Player Setup (Converts link to un-downloadable Blob)
+    var video = document.getElementById('securePlayer');
+    var videoSrc = "{{ url_for('static', filename='videos/' ~ active_video.video_url) }}";
+    
+    if (videoSrc.includes('.m3u8') && Hls.isSupported()) {
+        var hls = new Hls();
+        hls.loadSource(videoSrc);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, function() { video.play(); });
+    } 
+    else {
+        // Fallback for MP4 to Blob URL for additional security
+        fetch(videoSrc).then(response => response.blob()).then(blob => {
+            const blobUrl = URL.createObjectURL(blob);
+            video.src = blobUrl;
+        });
+    }
+
+    // Disable Right Click & Keyboard Shortcuts
+    if(video) {
+        video.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
+                e.preventDefault();
+                alert("Video downloading is strictly restricted.");
+            }
+        });
+    }
+</script>
+{% endif %}
+</body>
+</html>

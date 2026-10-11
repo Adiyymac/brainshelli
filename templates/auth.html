@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BRIN SHELL - Register</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Colors based on Brain Shell Logo Theme */
+        .bg-theme-main { background-color: #0b5e5a; } /* Deep teal green */
+        .text-theme-main { color: #0b5e5a; }
+        .text-theme-yellow { color: #facc15; } /* Yellow for accents */
+        
+        body {
+            /* Gradient background similar to logo backdrop */
+            background: linear-gradient(135deg, #0b5e5a 0%, #114e4b 50%, #064e3b 100%);
+        }
+        
+        .glass-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="text-gray-800 h-screen flex items-center justify-center p-4 selection:bg-teal-700 selection:text-white">
+    
+    <div class="glass-box p-8 sm:p-10 rounded-3xl w-full max-w-md relative overflow-hidden">
+        <!-- Accent decorative element -->
+        <div class="absolute top-0 right-0 w-24 h-24 bg-yellow-400 rounded-bl-full opacity-20 transform translate-x-4 -translate-y-4"></div>
+        
+        <!-- Logo Text styling -->
+        <div class="text-center mb-8 relative z-10">
+            <h2 class="text-4xl font-extrabold tracking-tight text-theme-main">
+                brain <br>
+                <span class="text-gray-900">Sh</span><span class="text-theme-yellow">e</span><span class="text-gray-900">ll</span>
+            </h2>
+            <h3 class="text-xl font-bold mt-6 text-gray-700">Join <span class="text-theme-main">{{ plan.title() }}</span> Plan</h3>
+        </div>
+        
+        {% if not otp_sent %}
+        
+        <!-- Error Message Box -->
+        {% if error %}
+        <div class="relative z-10 bg-red-50 border border-red-300 text-red-600 p-3 rounded-xl mb-6 text-center text-sm font-bold shadow-sm animate-pulse">
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        <!-- Step 1: Create Account Details -->
+        <form method="POST" class="relative z-10">
+            <input type="hidden" name="action" value="send_otp">
+            <div class="mb-4">
+                <label class="block text-gray-600 text-sm font-semibold mb-2">Email Address</label>
+                <input type="email" name="email" required class="w-full p-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent transition">
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-600 text-sm font-semibold mb-2">Create Password</label>
+                <input type="password" name="password" required class="w-full p-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent transition">
+            </div>
+            <button type="submit" class="w-full bg-theme-main hover:bg-teal-800 text-white p-3.5 rounded-xl font-bold tracking-wide transition shadow-lg shadow-teal-900/30">
+                Verify Email
+            </button>
+        </form>
+        
+        <!-- Divider -->
+        <div class="flex items-center my-6 relative z-10">
+            <div class="flex-grow border-t border-gray-300"></div>
+            <span class="px-4 text-gray-400 text-xs font-bold uppercase tracking-wider">OR</span>
+            <div class="flex-grow border-t border-gray-300"></div>
+        </div>
+
+        <!-- Continue with Google Button -->
+        <a href="/login/google" class="relative z-10 w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 p-3.5 rounded-xl font-bold transition shadow-sm">
+            <svg class="w-5 h-5" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+            </svg>
+            Continue with Google
+        </a>
+
+        {% else %}
+        
+        <!-- Error Message Box for OTP -->
+        {% if error %}
+        <div class="relative z-10 bg-red-50 border border-red-300 text-red-600 p-3 rounded-xl mb-6 text-center text-sm font-bold shadow-sm animate-pulse">
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        <!-- Step 2: OTP Verification -->
+        <div class="relative z-10 text-center">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-teal-100 text-teal-600 mb-4">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+            </div>
+            <p class="text-teal-700 font-medium mb-6 text-sm">Registration OTP sent to <br> <span class="font-bold text-gray-800">{{ email }}</span></p>
+        </div>
+        
+        <form method="POST" class="relative z-10">
+            <input type="hidden" name="action" value="verify_otp">
+            <input type="hidden" name="email" value="{{ email }}">
+            <div class="mb-6">
+                <label class="block text-gray-600 text-sm font-semibold mb-2 text-center">Enter 6-digit OTP</label>
+                <input type="text" name="otp" required class="w-full p-4 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-600 text-center tracking-[0.5em] text-2xl font-bold transition shadow-inner">
+            </div>
+            <button type="submit" class="w-full bg-theme-main hover:bg-teal-800 text-white p-4 rounded-xl font-bold tracking-wide transition shadow-lg shadow-teal-900/30">
+                Verify & Create Account
+            </button>
+        </form>
+        {% endif %}
+        
+    </div>
+</body>
+</html>
