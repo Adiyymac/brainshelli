@@ -1,1 +1,7 @@
-Flask==3.0.3
+Flask
+Flask-SQLAlchemy
+Flask-Mail
+Flask-Dance
+razorpay
+gunicorn
+Werkzeug
