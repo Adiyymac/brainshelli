@@ -8,25 +8,21 @@ from datetime import datetime, timedelta
 import random
 import uuid
 import os
-import razorpay  # പുതിയ Razorpay ഇമ്പോർട്ട്
+import razorpay
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1' # Only for testing in localhost
 
 app = Flask(__name__)
 app.secret_key = 'brinshell_super_secret_key'
-# UPLOAD_FOLDER പാത്ത് മാറ്റുക 
-UPLOAD_FOLDER = '/tmp/uploads'
 
-# ഇപ്പോൾ ഈ കോഡ് പ്രവർത്തിക്കും
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-UPLOAD_FOLDER = 'static/videos'
+# --- VERCEL FIX: Use /tmp for uploads ---
+UPLOAD_FOLDER = '/tmp/videos'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # --- DATABASE CONFIGURATION ---
-import os
-basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'brinshell.db')
+# Vercel-ൽ റീഡ്-ഒൺലി ഫയൽ സിസ്റ്റം ആയതിനാൽ ഡാറ്റാബേസ് തൽക്കാലത്തേക്ക് /tmp ൽ സേവ് ചെയ്യുന്നു
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/brinshell.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -34,8 +30,8 @@ db = SQLAlchemy(app)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'adiyychalakkal5@gmail.com'  
-app.config['MAIL_PASSWORD'] = 'jpolnonwbztapirv'         
+app.config['MAIL_USERNAME'] = 'adiyychalakkal5@gmail.com'
+app.config['MAIL_PASSWORD'] = 'jpolnonwbztapirv'
 mail = Mail(app)
 
 # --- GOOGLE OAUTH SETUP ---
@@ -51,8 +47,8 @@ google_bp = make_google_blueprint(
 app.register_blueprint(google_bp, url_prefix="/login")
 
 # --- RAZORPAY SETUP ---
-RAZORPAY_KEY_ID = "rzp_test_your_key_id_here" # നിങ്ങളുടെ യഥാർത്ഥ Key ID ഇവിടെ നൽകുക
-RAZORPAY_KEY_SECRET = "your_key_secret_here"  # നിങ്ങളുടെ യഥാർത്ഥ Key Secret ഇവിടെ നൽകുക
+RAZORPAY_KEY_ID = "rzp_test_your_key_id_here"
+RAZORPAY_KEY_SECRET = "your_key_secret_here"
 razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
 
 PLAN_PRICES = {
@@ -65,12 +61,12 @@ PLAN_PRICES = {
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=True) 
-    plan = db.Column(db.String(20), default='none') # പേയ്‌മെൻ്റ് കഴിയുമ്പോൾ മാത്രം പ്ലാൻ ആക്റ്റീവ് ആക്കാൻ
+    password = db.Column(db.String(255), nullable=True)
+    plan = db.Column(db.String(20), default='none')
     plan_expiry = db.Column(db.DateTime)
     session_token = db.Column(db.String(100))
     otp = db.Column(db.String(6))
-    current_video_order = db.Column(db.Integer, default=1) 
+    current_video_order = db.Column(db.Integer, default=1)
     auth_provider = db.Column(db.String(20), default='email')
     profile_name = db.Column(db.String(100), default="Student")
 
@@ -78,9 +74,9 @@ class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     video_url = db.Column(db.String(500), nullable=False)
-    category = db.Column(db.String(20), nullable=False) 
-    section = db.Column(db.String(100), nullable=False, default="Module 1") 
-    order_num = db.Column(db.Integer, nullable=False) 
+    category = db.Column(db.String(20), nullable=False)
+    section = db.Column(db.String(100), nullable=False, default="Module 1")
+    order_num = db.Column(db.Integer, nullable=False)
 
 class CommunityMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -103,21 +99,19 @@ def check_auth():
     user = User.query.filter_by(email=session['user_email']).first()
     if not user or user.session_token != session.get('device_token'): return False
     
-    # യൂസറെ അഡ്മിൻ സസ്പെൻഡ് ചെയ്തിട്ടുണ്ടെങ്കിൽ ലോഗിൻ അനുവദിക്കില്ല
-    if user.plan == 'suspended': return False 
+    if user.plan == 'suspended': return False
     
     if user.email != 'adiyychalakkal5@gmail.com' and user.plan != 'none' and datetime.now() > user.plan_expiry: return False
     return user
 
 # --- MAIN ROUTES ---
 @app.route('/')
-def index(): 
+def index():
     return render_template('index.html')
 
 @app.route('/pay/<plan>')
-def pay(plan): 
-    # പുതിയ യൂസർ ആണെങ്കിൽ ആദ്യം രജിസ്റ്റർ ചെയ്യാൻ പോകുന്നു
-    session['selected_plan'] = plan 
+def pay(plan):
+    session['selected_plan'] = plan
     return redirect(url_for('auth', plan=plan))
 
 # --- GOOGLE LOGIN ---
@@ -149,7 +143,6 @@ def google_login():
     if email == 'adiyychalakkal5@gmail.com':
         return redirect(url_for('admin'))
         
-    # ലോഗിൻ ചെയ്ത ശേഷം പേയ്‌മെൻ്റ് കഴിഞ്ഞിട്ടില്ലെങ്കിൽ checkout ലേക്ക് പോകും
     if user.plan == 'none' and plan:
         return redirect(url_for('checkout', plan=plan))
         
@@ -165,7 +158,7 @@ def auth():
         user = User.query.filter_by(email=email).first()
         
         if action == 'send_otp':
-            if user: 
+            if user:
                 return render_template('auth.html', error="Email already registered!", plan=plan, otp_sent=False)
             
             password = request.form.get('password')
@@ -180,56 +173,35 @@ def auth():
             try:
                 msg = Message('Verify Your Email Address - BRIN SHELL', sender=app.config['MAIL_USERNAME'], recipients=[email])
                 
-                # Clean, Razorpay-style Corporate Email Template
                 msg.html = f"""
                 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f5f7; margin: 0; padding: 0; min-height: 100vh;">
-                    
-                    <!-- Dark Teal Header (Like Razorpay Blue Header) -->
                     <div style="background-color: #0b5e5a; padding: 30px 20px 60px 20px; text-align: center;">
                         <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 900; letter-spacing: 1px;">
                             brain<span style="color: #facc15;">e</span>ll
                         </h1>
                     </div>
-
-                    <!-- White Content Card -->
                     <div style="max-width: 480px; margin: -40px auto 40px auto; background-color: #ffffff; padding: 40px 30px; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                        
-                        <!-- Icon -->
                         <div style="margin-bottom: 20px;">
                             <img src="https://ui-avatars.com/api/?name=BS&background=0b5e5a&color=fff&rounded=true&size=50" alt="Icon" style="width: 50px; height: 50px;">
                         </div>
-
                         <h2 style="color: #111827; font-size: 20px; margin-top: 0; margin-bottom: 25px; font-weight: 500;">
                             Verify Your Email Address
                         </h2>
-
                         <hr style="border: none; border-top: 1px solid #e5e7eb; margin-bottom: 25px;">
-
                         <p style="font-size: 14px; color: #374151; line-height: 1.6; margin-bottom: 35px;">
-                            Verify your email to finish signing up for the {plan.title()} plan with BRIN SHELL. Use the following verification code:
+                            Verify your email to finish signing up for the {plan.title() if plan else ''} plan with BRIN SHELL. Use the following verification code:
                         </p>
-                        
-                        <!-- Large OTP Code -->
                         <h1 style="margin: 0; font-size: 38px; font-weight: 500; color: #0b5e5a; letter-spacing: 2px;">
                             {otp}
                         </h1>
-
                         <p style="font-size: 13px; color: #6b7280; margin-top: 35px; margin-bottom: 0;">
                             The verification code is valid for 10 minutes.
                         </p>
                     </div>
-
-                    <!-- Footer Text -->
-                    <div style="text-align: center; padding-bottom: 40px; padding-left: 20px; padding-right: 20px;">
-                        <p style="font-size: 11px; color: #9ca3af; margin: 0; line-height: 1.5;">
-                            For any further queries or clarifications, feel free to reach out to us by replying to this email.
-                        </p>
-                    </div>
                 </div>
                 """
-                #mail.send(msg)
+                mail.send(msg)
                 print(f"OTP is: {otp}")
-                print(f"✅ HTML Email successfully sent to {email}")
             except Exception as e:
                 print(e)
                 return render_template('auth.html', error="Failed to send email. Check your internet settings.", plan=plan, otp_sent=False)
@@ -243,7 +215,7 @@ def auth():
             if user and user.otp == entered_otp:
                 new_token = str(uuid.uuid4())
                 user.session_token = new_token
-                user.otp = None 
+                user.otp = None
                 db.session.commit()
                 session['user_email'] = email_hidden
                 session['device_token'] = new_token
@@ -263,7 +235,7 @@ def login():
         
         if action == 'send_otp':
             password = request.form.get('password')
-            if not user or not user.password or not check_password_hash(user.password, password): 
+            if not user or not user.password or not check_password_hash(user.password, password):
                 return render_template('login.html', error="Invalid Email or Password.", otp_sent=False)
             
             otp = str(random.randint(100000, 999999))
@@ -273,54 +245,34 @@ def login():
             try:
                 msg = Message('Your Secure Login Code - BRIN SHELL', sender=app.config['MAIL_USERNAME'], recipients=[email])
                 
-                # Clean, Razorpay-style Corporate Email Template
                 msg.html = f"""
                 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f5f7; margin: 0; padding: 0; min-height: 100vh;">
-                    
-                    <!-- Dark Teal Header -->
                     <div style="background-color: #0b5e5a; padding: 30px 20px 60px 20px; text-align: center;">
                         <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 900; letter-spacing: 1px;">
                             brain<span style="color: #facc15;">e</span>ll
                         </h1>
                     </div>
-
-                    <!-- White Content Card -->
                     <div style="max-width: 480px; margin: -40px auto 40px auto; background-color: #ffffff; padding: 40px 30px; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
-                        
                         <div style="margin-bottom: 20px;">
                             <img src="https://ui-avatars.com/api/?name=BS&background=0b5e5a&color=fff&rounded=true&size=50" alt="Icon" style="width: 50px; height: 50px;">
                         </div>
-
                         <h2 style="color: #111827; font-size: 20px; margin-top: 0; margin-bottom: 25px; font-weight: 500;">
                             Secure Login Request
                         </h2>
-
                         <hr style="border: none; border-top: 1px solid #e5e7eb; margin-bottom: 25px;">
-
                         <p style="font-size: 14px; color: #374151; line-height: 1.6; margin-bottom: 35px;">
                             We received a request to log into your BRIN SHELL account. Use the following verification code to proceed:
                         </p>
-                        
-                        <!-- Large OTP Code -->
                         <h1 style="margin: 0; font-size: 38px; font-weight: 500; color: #0b5e5a; letter-spacing: 2px;">
                             {otp}
                         </h1>
-
                         <p style="font-size: 13px; color: #6b7280; margin-top: 35px; margin-bottom: 0;">
                             If you did not request this code, you can safely ignore this email.
-                        </p>
-                    </div>
-
-                    <!-- Footer Text -->
-                    <div style="text-align: center; padding-bottom: 40px; padding-left: 20px; padding-right: 20px;">
-                        <p style="font-size: 11px; color: #9ca3af; margin: 0; line-height: 1.5;">
-                            For any further queries or clarifications, feel free to reach out to us by replying to this email.
                         </p>
                     </div>
                 </div>
                 """
                 mail.send(msg)
-                print(f"✅ HTML Email successfully sent to {email}")
             except Exception as e:
                 print(e)
                 return render_template('login.html', error="Failed to send email.", otp_sent=False)
@@ -334,13 +286,12 @@ def login():
             if user and user.otp == entered_otp:
                 new_token = str(uuid.uuid4())
                 user.session_token = new_token
-                user.otp = None 
+                user.otp = None
                 db.session.commit()
                 session['user_email'] = email_hidden
                 session['device_token'] = new_token
                 if email_hidden == 'adiyychalakkal5@gmail.com': return redirect(url_for('admin'))
                 
-                # Check if user needs to pay
                 if user.plan == 'none':
                     plan_from_session = session.get('selected_plan', 'pro')
                     return redirect(url_for('checkout', plan=plan_from_session))
@@ -351,11 +302,10 @@ def login():
             
     return render_template('login.html', otp_sent=False)
 
-# --- DUMMY CHECKOUT ROUTES (ഫോൺ ഇല്ലാത്തതുകൊണ്ട് താൽക്കാലികമായി ഉപയോഗിക്കാൻ) ---
 @app.route('/checkout/<plan>')
 def checkout(plan):
     user = check_auth()
-    if not user: 
+    if not user:
         session['selected_plan'] = plan
         return redirect(url_for('login'))
         
@@ -363,7 +313,6 @@ def checkout(plan):
         
     amount = PLAN_PRICES[plan]
     
-    # Razorpay API ഒഴിവാക്കി ഒരു ഡമ്മി ഓർഡർ ഉണ്ടാക്കുന്നു
     class DummyOrder:
         pass
     order = DummyOrder()
@@ -378,16 +327,12 @@ def payment_success():
     if not user: return redirect(url_for('login'))
     
     plan = request.form.get('plan')
-    
-    # തൽക്കാലം Razorpay Signature Verification ഒഴിവാക്കുന്നു
-    # പെയ്മെൻ്റ് വിജയിച്ചതായി കണക്കാക്കി ഡാറ്റാബേസ് അപ്ഡേറ്റ് ചെയ്യുന്നു
     user.plan = plan
     user.plan_expiry = datetime.now() + timedelta(days=30)
     db.session.commit()
     
     return redirect(url_for('dashboard'))
 
-# --- DASHBOARD & PORTAL LOGIC ---
 @app.route('/dashboard')
 def dashboard():
     user = check_auth()
@@ -458,7 +403,6 @@ def post_message():
         db.session.commit()
     return redirect(request.referrer)
 
-# --- SECURED ADMIN PORTAL ---
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if session.get('user_email') != 'adiyychalakkal5@gmail.com': return "Access Denied!"
@@ -466,7 +410,6 @@ def admin():
     if request.method == 'POST':
         action = request.form.get('action')
         
-        # 1. Video Upload
         if action == 'upload_video':
             title = request.form.get('title')
             category = request.form.get('category')
@@ -484,7 +427,6 @@ def admin():
                 db.session.add(new_video)
                 db.session.commit()
                 
-        # 2. Reply to User Doubt
         elif action == 'reply_doubt':
             message_id = request.form.get('message_id')
             reply_text = request.form.get('reply_text')
@@ -493,7 +435,6 @@ def admin():
                 msg.admin_reply = reply_text
                 db.session.commit()
                 
-        # 3. Suspend (Block) User
         elif action == 'suspend_user':
             user_id = request.form.get('user_id')
             user = User.query.get(user_id)
@@ -501,7 +442,6 @@ def admin():
                 user.plan = 'suspended'
                 db.session.commit()
                 
-        # 4. Activate / Update User Plan
         elif action == 'activate_user':
             user_id = request.form.get('user_id')
             new_plan = request.form.get('new_plan')
