@@ -11,8 +11,10 @@ import razorpay
 import cloudinary
 import cloudinary.uploader
 
-# ഏറ്റവും പ്രധാനപ്പെട്ട മാറ്റം ഇതാണ്: instance_path='/tmp'
-app = Flask(__name__, instance_path='/tmp')
+app = Flask(__name__)
+
+# Vercel-ന്റെ Read-Only എറർ മാറ്റാൻ ഇത് നിർബന്ധമാണ്
+app.instance_path = '/tmp'
 
 app.secret_key = os.getenv('SECRET_KEY', 'brinshell_super_secret_key')
 
@@ -26,13 +28,15 @@ cloudinary.config(
 # --- DATABASE CONFIGURATION ---
 db_url = os.getenv('DATABASE_URL')
 if not db_url:
-    # Vercel-ൽ റൺ ചെയ്യാൻ താൽക്കാലിക ഡാറ്റാബേസ്
+    # Vercel-ൽ പുതിയ ഫയലുകൾ ഉണ്ടാക്കാൻ /tmp ഫോൾഡർ
     db_url = 'sqlite:////tmp/brinshell.db'
 elif db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# ഡാറ്റാബേസ് കണക്ട് ചെയ്യുന്നു
 db = SQLAlchemy(app)
 
 # --- EMAIL CONFIGURATION ---
