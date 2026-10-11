@@ -374,4 +374,72 @@ def admin():
             order_num = request.form.get('order_num')
             video_file = request.files.get('video_file')
             
-            if video_file and video_file
+            if video_file and video_file.filename != '':
+                try:
+                    # Uploads directly to Cloudinary instead of local folder
+                    upload_result = cloudinary.uploader.upload(
+                        video_file, 
+                        resource_type="video", 
+                        folder="brinshell_videos"
+                    )
+                    
+                    # Get the cloud URL provided by Cloudinary
+                    cloud_video_url = upload_result.get('secure_url')
+                    
+                    new_video = Video(title=title, video_url=cloud_video_url, category=category, section=section, order_num=int(order_num))
+                    db.session.add(new_video)
+                    db.session.commit()
+                except Exception as e:
+                    print(f"Error uploading to Cloudinary: {e}")
+                
+        # 2. Reply to User Doubt
+        elif action == 'reply_doubt':
+            message_id = request.form.get('message_id')
+            reply_text = request.form.get('reply_text')
+            msg = CommunityMessage.query.get(message_id)
+            if msg:
+                msg.admin_reply = reply_text
+                db.session.commit()
+                
+        # 3. Suspend (Block) User
+        elif action == 'suspend_user':
+            user_id = request.form.get('user_id')
+            user = User.query.get(user_id)
+            if user:
+                user.plan = 'suspended'
+                db.session.commit()
+                
+        # 4. Activate / Update User Plan
+        elif action == 'activate_user':
+            user_id = request.form.get('user_id')
+            new_plan = request.form.get('new_plan')
+            user = User.query.get(user_id)
+            if user:
+                user.plan = new_plan
+                user.plan_expiry = datetime.now() + timedelta(days=30)
+                db.session.commit()
+                
+        return redirect(url_for('admin'))
+        
+    videos = Video.query.order_by(Video.category, Video.order_num).all()
+    users = User.query.filter(User.email != 'adiyychalakkal5@gmail.com').all()
+    messages = CommunityMessage.query.order_by(CommunityMessage.timestamp.desc()).all()
+
+    total_revenue = 0
+    for u in users:
+        if u.plan == 'pro':
+            total_revenue += 499
+        elif u.plan == 'plus':
+            total_revenue += 899
+        elif u.plan == 'premium':
+            total_revenue += 1499
+
+    return render_template('admin.html', videos=videos, users=users, messages=messages, total_revenue=total_revenue)
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
+
+if __name__ == '__main__':
+    app.run(debug=True)
