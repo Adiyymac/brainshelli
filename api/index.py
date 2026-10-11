@@ -25,6 +25,7 @@ cloudinary.config(
 )
 
 # --- DATABASE CONFIGURATION (PostgreSQL for Vercel) ---
+# --- DATABASE CONFIGURATION (PostgreSQL for Vercel) ---
 db_url = os.getenv('DATABASE_URL')
 if not db_url:
     # Vercel-ൽ പുതിയ ഫയലുകൾ ഉണ്ടാക്കാൻ /tmp ഫോൾഡർ മാത്രമേ അനുവദിക്കൂ
