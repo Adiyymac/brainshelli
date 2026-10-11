@@ -25,8 +25,11 @@ cloudinary.config(
 )
 
 # --- DATABASE CONFIGURATION (PostgreSQL for Vercel) ---
-db_url = os.getenv('DATABASE_URL', 'sqlite:///brinshell.db')
-if db_url.startswith("postgres://"):
+db_url = os.getenv('DATABASE_URL')
+if not db_url:
+    # Vercel-ൽ പുതിയ ഫയലുകൾ ഉണ്ടാക്കാൻ /tmp ഫോൾഡർ മാത്രമേ അനുവദിക്കൂ
+    db_url = 'sqlite:////tmp/brinshell.db'
+elif db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
