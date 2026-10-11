@@ -11,21 +11,22 @@ import razorpay
 import cloudinary
 import cloudinary.uploader
 
+# Vercel-ന്റെ Read-Only എറർ പൂർണ്ണമായും മാറ്റാൻ instance_path ഇവിടെ നൽകുന്നു
 app = Flask(__name__, instance_path='/tmp')
 
 app.secret_key = os.getenv('SECRET_KEY', 'brinshell_super_secret_key')
 
 # --- CLOUDINARY CONFIGURATION ---
 cloudinary.config(
-  cloud_name = os.getenv('CLOUDINARY_CLOUD_NAME'),
-  api_key = os.getenv('CLOUDINARY_API_KEY'),
-  api_secret = os.getenv('CLOUDINARY_API_SECRET')
+    cloud_name = os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key = os.getenv('CLOUDINARY_API_KEY'),
+    api_secret = os.getenv('CLOUDINARY_API_SECRET')
 )
 
 # --- DATABASE CONFIGURATION ---
 db_url = os.getenv('DATABASE_URL')
 if not db_url:
-    # Vercel-ൽ പുതിയ ഫയലുകൾ ഉണ്ടാക്കാൻ /tmp ഫോൾഡർ
+    # Vercel-ൽ പുതിയ ഫയലുകൾ ഉണ്ടാക്കാൻ /tmp ഫോൾഡർ മാത്രമേ അനുവദിക്കൂ
     db_url = 'sqlite:////tmp/brinshell.db'
 elif db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
@@ -428,6 +429,5 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
-# Vercel-ൽ റൺ ചെയ്യാൻ ഈ വരികൾ ആവശ്യമാണ്
 if __name__ == '__main__':
     app.run(debug=True)
