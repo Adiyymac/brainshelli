@@ -11,10 +11,7 @@ import razorpay
 import cloudinary
 import cloudinary.uploader
 
-app = Flask(__name__)
-
-# Vercel-ന്റെ Read-Only എറർ മാറ്റാൻ ഇത് നിർബന്ധമാണ്
-app.instance_path = '/tmp'
+app = Flask(__name__, instance_path='/tmp')
 
 app.secret_key = os.getenv('SECRET_KEY', 'brinshell_super_secret_key')
 
