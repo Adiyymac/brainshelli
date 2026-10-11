@@ -9,15 +9,12 @@ import uuid
 import os
 import razorpay
 
-# NEW: Import Cloudinary for cloud video storage
+# Vercel-ൽ വീഡിയോ അപ്‌ലോഡ് ചെയ്യാൻ Cloudinary ഉപയോഗിക്കുന്നു
 import cloudinary
 import cloudinary.uploader
 
-# Only use insecure transport for local testing. Comment this out in production!
-# os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1' 
-
 app = Flask(__name__)
-# Fetch secret key from environment, fallback to string for local dev
+# Vercel Environment Variables-ൽ നിന്ന് Secret Key എടുക്കുന്നു
 app.secret_key = os.getenv('SECRET_KEY', 'brinshell_super_secret_key')
 
 # --- CLOUDINARY CONFIGURATION (For Vercel Video Uploads) ---
@@ -28,7 +25,6 @@ cloudinary.config(
 )
 
 # --- DATABASE CONFIGURATION (PostgreSQL for Vercel) ---
-# It fetches the cloud DB URL from Vercel, but falls back to SQLite for your local testing
 db_url = os.getenv('DATABASE_URL', 'sqlite:///brinshell.db')
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
@@ -63,9 +59,9 @@ RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET', 'your_key_secret_here')
 razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
 
 PLAN_PRICES = {
-    'pro': 49900,      # ₹499
-    'plus': 89900,     # ₹899
-    'premium': 149900  # ₹1499
+    'pro': 49900,      
+    'plus': 89900,     
+    'premium': 149900  
 }
 
 # --- DATABASE MODELS ---
@@ -123,7 +119,6 @@ def pay(plan):
     session['selected_plan'] = plan 
     return redirect(url_for('auth', plan=plan))
 
-# --- GOOGLE LOGIN ---
 @app.route("/google-login")
 def google_login():
     if not google.authorized:
@@ -157,7 +152,6 @@ def google_login():
         
     return redirect(url_for('dashboard'))
 
-# --- EMAIL AUTH ROUTES ---
 @app.route('/auth', methods=['GET', 'POST'])
 def auth():
     plan = request.args.get('plan')
@@ -183,10 +177,9 @@ def auth():
                 msg = Message('Verify Your Email Address - BRIN SHELL', sender=app.config['MAIL_USERNAME'], recipients=[email])
                 msg.body = f"Your verification code is: {otp}"
                 mail.send(msg)
-                print(f"OTP is: {otp}")
             except Exception as e:
                 print(e)
-                return render_template('auth.html', error="Failed to send email. Check your internet settings.", plan=plan, otp_sent=False)
+                return render_template('auth.html', error="Failed to send email.", plan=plan, otp_sent=False)
 
             return render_template('auth.html', email=email, otp_sent=True, plan=plan)
             
@@ -358,7 +351,6 @@ def post_message():
         db.session.commit()
     return redirect(request.referrer)
 
-# --- SECURED ADMIN PORTAL (UPDATED FOR CLOUD VIDEO UPLOAD) ---
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if session.get('user_email') != 'adiyychalakkal5@gmail.com': return "Access Denied!"
@@ -366,7 +358,6 @@ def admin():
     if request.method == 'POST':
         action = request.form.get('action')
         
-        # 1. Cloudinary Video Upload
         if action == 'upload_video':
             title = request.form.get('title')
             category = request.form.get('category')
@@ -376,23 +367,18 @@ def admin():
             
             if video_file and video_file.filename != '':
                 try:
-                    # Uploads directly to Cloudinary instead of local folder
                     upload_result = cloudinary.uploader.upload(
                         video_file, 
                         resource_type="video", 
                         folder="brinshell_videos"
                     )
-                    
-                    # Get the cloud URL provided by Cloudinary
                     cloud_video_url = upload_result.get('secure_url')
-                    
                     new_video = Video(title=title, video_url=cloud_video_url, category=category, section=section, order_num=int(order_num))
                     db.session.add(new_video)
                     db.session.commit()
                 except Exception as e:
                     print(f"Error uploading to Cloudinary: {e}")
                 
-        # 2. Reply to User Doubt
         elif action == 'reply_doubt':
             message_id = request.form.get('message_id')
             reply_text = request.form.get('reply_text')
@@ -401,7 +387,6 @@ def admin():
                 msg.admin_reply = reply_text
                 db.session.commit()
                 
-        # 3. Suspend (Block) User
         elif action == 'suspend_user':
             user_id = request.form.get('user_id')
             user = User.query.get(user_id)
@@ -409,7 +394,6 @@ def admin():
                 user.plan = 'suspended'
                 db.session.commit()
                 
-        # 4. Activate / Update User Plan
         elif action == 'activate_user':
             user_id = request.form.get('user_id')
             new_plan = request.form.get('new_plan')
@@ -441,5 +425,6 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
+# Vercel-ൽ റൺ ചെയ്യാൻ ഈ വരികൾ ആവശ്യമാണ്
 if __name__ == '__main__':
     app.run(debug=True)
