@@ -7,3 +7,4 @@ razorpay==1.4.1
 psycopg2-binary==2.9.9
 cloudinary==1.36.0
 blinker==1.7.0
+setuptools
