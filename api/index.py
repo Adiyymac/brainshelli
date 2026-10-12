@@ -67,7 +67,55 @@ PLAN_PRICES = {
     'plus': 89900,     
     'premium': 149900  
 }
-
+def build_otp_email(otp, heading, intro):
+    digits = ''.join(
+        f'<td style="padding:0 4px;"><div style="width:44px;height:56px;line-height:56px;'
+        f'text-align:center;font-size:28px;font-weight:700;color:#111827;background:#f3f4f6;'
+        f'border:1px solid #e5e7eb;border-radius:10px;font-family:Segoe UI,Roboto,Arial,sans-serif;">{d}</div></td>'
+        for d in otp
+    )
+    return f"""
+<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background:#f4f5f7;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:32px 12px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.06);">
+        <tr>
+          <td align="center" style="background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:28px 20px;">
+            <div style="font-family:Segoe UI,Roboto,Arial,sans-serif;font-size:22px;font-weight:800;letter-spacing:3px;color:#ffffff;">BRIN SHELL</div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:32px 28px 8px;font-family:Segoe UI,Roboto,Arial,sans-serif;">
+            <h2 style="margin:0 0 10px;font-size:20px;color:#111827;">{heading}</h2>
+            <p style="margin:0;font-size:15px;line-height:1.6;color:#4b5563;">{intro}</p>
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="padding:24px 28px;">
+            <table cellpadding="0" cellspacing="0"><tr>{digits}</tr></table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:0 28px 28px;font-family:Segoe UI,Roboto,Arial,sans-serif;">
+            <p style="margin:0;font-size:13px;line-height:1.6;color:#6b7280;text-align:center;">
+              Ee code ninte security-kku vendi aanu. Aarodum share cheyyaruthu.<br>
+              Ee request nee cheythathalla enkil, ee email ignore cheyyam.
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="background:#f9fafb;padding:16px;border-top:1px solid #eef0f3;font-family:Segoe UI,Roboto,Arial,sans-serif;font-size:12px;color:#9ca3af;">
+            &copy; BRIN SHELL. All rights reserved.
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
+"""
 # --- DATABASE MODELS ---
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -180,11 +228,15 @@ def auth():
             try:
                 msg = Message('Verify Your Email Address - BRIN SHELL', sender=app.config['MAIL_USERNAME'], recipients=[email])
                 msg.body = f"Your verification code is: {otp}"
+                msg.html = build_otp_email(
+                    otp,
+                    "Verify your email",
+                    "Welcome to BRIN SHELL! Account create cheyyan ee code verification page-il enter cheyyuka."
+                )
                 mail.send(msg)
             except Exception as e:
                 print(e)
                 return render_template('auth.html', error="Failed to send email.", plan=plan, otp_sent=False)
-
             return render_template('auth.html', email=email, otp_sent=True, plan=plan)
             
         elif action == 'verify_otp':
@@ -221,14 +273,18 @@ def login():
             user.otp = otp
             db.session.commit()
             
-            try:
+           try:
                 msg = Message('Your Secure Login Code - BRIN SHELL', sender=app.config['MAIL_USERNAME'], recipients=[email])
                 msg.body = f"Your verification code is: {otp}"
+                msg.html = build_otp_email(
+                    otp,
+                    "Your login code",
+                    "Login cheyyan ee code use cheyyuka."
+                )
                 mail.send(msg)
             except Exception as e:
                 print(e)
                 return render_template('login.html', error="Failed to send email.", otp_sent=False)
-
             return render_template('login.html', email=email, otp_sent=True)
             
         elif action == 'verify_otp':
