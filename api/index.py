@@ -15,7 +15,8 @@ import cloudinary.uploader
 app = Flask(__name__, instance_path='/tmp')
 
 app.secret_key = os.getenv('SECRET_KEY', 'brinshell_super_secret_key')
-
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 # --- CLOUDINARY CONFIGURATION ---
 cloudinary.config(
     cloud_name = os.getenv('CLOUDINARY_CLOUD_NAME'),
