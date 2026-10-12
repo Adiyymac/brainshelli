@@ -67,6 +67,7 @@ PLAN_PRICES = {
     'plus': 89900,     
     'premium': 149900  
 }
+
 def build_otp_email(otp, heading, intro):
     digits = ''.join(
         f'<td style="padding:0 4px;"><div style="width:44px;height:56px;line-height:56px;'
@@ -116,6 +117,7 @@ def build_otp_email(otp, heading, intro):
 </body>
 </html>
 """
+
 # --- DATABASE MODELS ---
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -273,7 +275,7 @@ def login():
             user.otp = otp
             db.session.commit()
             
-           try:
+            try:
                 msg = Message('Your Secure Login Code - BRIN SHELL', sender=app.config['MAIL_USERNAME'], recipients=[email])
                 msg.body = f"Your verification code is: {otp}"
                 msg.html = build_otp_email(
