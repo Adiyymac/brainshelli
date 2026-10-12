@@ -34,16 +34,18 @@
                 brain <br>
                 <span class="text-gray-900">Sh</span><span class="text-theme-yellow">e</span><span class="text-gray-900">ll</span>
             </h2>
-            <p class="text-xs font-semibold tracking-[0.2em] text-gray-500 uppercase mt-2 uppercase">Mind Center</p>
+            <p class="text-xs font-semibold tracking-[0.2em] text-gray-500 uppercase mt-2">Mind Center</p>
             <h3 class="text-xl font-bold mt-6 text-gray-700">Welcome Back</h3>
         </div>
         
-        {% if not otp_sent %}
+        <!-- എറർ മെസ്സേജ് ഇവിടെയാണ് വരേണ്ടത് (രണ്ട് സ്റ്റെപ്പിലും കാണാൻ വേണ്ടി) -->
         {% if error %}
         <div class="relative z-10 bg-red-900/40 border border-red-500 text-red-400 p-3 rounded-xl mb-6 text-center text-sm font-bold shadow-lg animate-pulse">
             {{ error }}
         </div>
         {% endif %}
+
+        {% if not otp_sent %}
         <!-- Step 1: Email & Password -->
         <form method="POST" class="relative z-10">
             <input type="hidden" name="action" value="send_otp">
