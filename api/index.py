@@ -15,8 +15,11 @@ import cloudinary.uploader
 app = Flask(__name__, instance_path='/tmp')
 
 app.secret_key = os.getenv('SECRET_KEY', 'brinshell_super_secret_key')
+
+# Vercel-ൽ ലോഗിൻ സെഷൻ നഷ്ടപ്പെടാതിരിക്കാൻ ഇത് നിർബന്ധമാണ്
 app.config['SESSION_COOKIE_SECURE'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+
 # --- CLOUDINARY CONFIGURATION ---
 cloudinary.config(
     cloud_name = os.getenv('CLOUDINARY_CLOUD_NAME'),
@@ -27,7 +30,6 @@ cloudinary.config(
 # --- DATABASE CONFIGURATION ---
 db_url = os.getenv('DATABASE_URL')
 if not db_url:
-    # Vercel-ൽ പുതിയ ഫയലുകൾ ഉണ്ടാക്കാൻ /tmp ഫോൾഡർ മാത്രമേ അനുവദിക്കൂ
     db_url = 'sqlite:////tmp/brinshell.db'
 elif db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
@@ -35,7 +37,6 @@ elif db_url.startswith("postgres://"):
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# ഡാറ്റാബേസ് കണക്ട് ചെയ്യുന്നു
 db = SQLAlchemy(app)
 
 # --- EMAIL CONFIGURATION ---
@@ -211,8 +212,8 @@ def google_login():
 def auth():
     plan = request.args.get('plan')
     if request.method == 'POST':
-        email = request.form.get('email')
-        action = request.form.get('action')
+        action = request.form.get('action', '').strip()
+        email = request.form.get('email', '').strip()
         user = User.query.filter_by(email=email).first()
         
         if action == 'send_otp':
@@ -243,8 +244,8 @@ def auth():
             return render_template('auth.html', email=email, otp_sent=True, plan=plan)
             
         elif action == 'verify_otp':
-            entered_otp = request.form.get('otp')
-            email_hidden = request.form.get('email')
+            entered_otp = request.form.get('otp', '').strip()
+            email_hidden = request.form.get('email', '').strip()
             user = User.query.filter_by(email=email_hidden).first()
             if user and user.otp == entered_otp:
                 new_token = str(uuid.uuid4())
@@ -263,8 +264,8 @@ def auth():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email')
-        action = request.form.get('action')
+        action = request.form.get('action', '').strip()
+        email = request.form.get('email', '').strip()
         user = User.query.filter_by(email=email).first()
         
         if action == 'send_otp':
@@ -291,9 +292,10 @@ def login():
             return render_template('login.html', email=email, otp_sent=True)
             
         elif action == 'verify_otp':
-            entered_otp = request.form.get('otp')
-            email_hidden = request.form.get('email')
+            entered_otp = request.form.get('otp', '').strip()
+            email_hidden = request.form.get('email', '').strip()
             user = User.query.filter_by(email=email_hidden).first()
+            
             if user and user.otp == entered_otp:
                 new_token = str(uuid.uuid4())
                 user.session_token = new_token
