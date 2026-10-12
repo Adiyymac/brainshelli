@@ -7,3 +7,5 @@ razorpay
 cloudinary
 psycopg2-binary
 setuptools
+psycopg2-binary
+psycopg-binary
