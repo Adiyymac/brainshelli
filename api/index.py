@@ -188,15 +188,32 @@ def google_login():
     if not resp.ok: return "Failed to fetch user info from Google."
         
     google_info = resp.json()
-    email = google_info["email"]
+    email = google_info.get("email")
+    
+    # ഗൂഗിളിൽ നിന്ന് പേരും ഫോട്ടോയും എടുക്കുന്നു
+    google_name = google_info.get("name", "Student")
+    google_picture = google_info.get("picture", "")
     
     user = User.query.filter_by(email=email).first()
     plan = session.get('selected_plan', 'pro')
     
     if not user:
-        user = User(email=email, plan='none', auth_provider='google')
+        # പുതിയ അക്കൗണ്ട് ആണെങ്കിൽ ഗൂഗിളിലെ പേരും ഫോട്ടോയും കൊടുക്കുന്നു
+        user = User(
+            email=email, 
+            plan='none', 
+            auth_provider='google', 
+            profile_name=google_name, 
+            profile_photo=google_picture
+        )
         db.session.add(user)
-    
+    else:
+        # പഴയ അക്കൗണ്ട് ആണെങ്കിൽ, പേരും ഫോട്ടോയും ഇല്ലെങ്കിൽ മാത്രം അപ്ഡേറ്റ് ചെയ്യുന്നു
+        if user.profile_name == "Student":
+            user.profile_name = google_name
+        if not user.profile_photo:
+            user.profile_photo = google_picture
+            
     new_token = str(uuid.uuid4())
     user.session_token = new_token
     db.session.commit()
