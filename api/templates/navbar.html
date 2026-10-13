@@ -1,7 +1,9 @@
 <!-- DESKTOP: Floating Dynamic Island Top Bar (Icons Only) -->
 <nav class="hidden md:flex dynamic-nav fixed top-6 left-1/2 transform -translate-x-1/2 w-fit min-w-[900px] bg-[#021a18]/70 backdrop-blur-xl rounded-full px-8 py-3.5 justify-between items-center z-50 shadow-[0_10px_30px_rgba(20,184,166,0.15)] border border-teal-500/30">
     <div class="flex items-center gap-4">
-        <h1 class="text-xl font-black tracking-widest text-white text-glow">BRIN</h1>
+        <a href="/" class="text-xl md:text-2xl font-black tracking-tight text-teal-500 pl-2">
+            brain<span class="text-white">Sh</span><span class="text-yellow-400">e</span><span class="text-white">ll</span>
+        </a>
         {% if session.get('user_email') and user and user.plan != 'none' %}
             <span class="bg-teal-900/50 text-teal-300 px-2.5 py-1 rounded-full text-[9px] font-bold border border-teal-500/50 uppercase tracking-widest shadow-inner">{{ user.plan }}</span>
         {% endif %}
