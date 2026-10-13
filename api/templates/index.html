@@ -6,14 +6,14 @@
     {% include 'meta.html' %}
     
     <style>
-        /* Large Graduation Cap Animation */
+        /* Large Realistic Cap Animation */
         @keyframes float-cap {
             0%, 100% { transform: translateY(0) rotate(-5deg); }
-            50% { transform: translateY(-25px) rotate(5deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
         }
         .animate-cap {
             display: inline-block;
-            animation: float-cap 5s ease-in-out infinite;
+            animation: float-cap 6s ease-in-out infinite;
             transform-origin: center;
         }
     </style>
@@ -51,15 +51,14 @@
                 </div>
             </div>
 
-            <!-- Right Side: Big Animated Cap -->
+            <!-- Right Side: Original Image Cap -->
             <div class="w-full md:w-2/5 flex justify-center items-center mb-10 md:mb-0">
-                <div class="animate-cap relative">
-                    <!-- Cap Background Glow -->
-                    <div class="absolute inset-0 bg-teal-500/20 blur-[60px] rounded-full scale-150"></div>
-                    <!-- Cap SVG -->
-                    <svg class="w-56 h-56 md:w-80 md:h-80 text-teal-400 relative z-10 drop-shadow-[0_15px_30px_rgba(20,184,166,0.4)]" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 14.72l5-2.45v3.72z"/>
-                    </svg>
+                <div class="animate-cap relative w-64 h-64 md:w-96 md:h-96">
+                    <!-- Image Background Glow -->
+                    <div class="absolute inset-0 bg-teal-500/30 blur-[70px] rounded-full scale-110"></div>
+                    
+                    <!-- Original Cap Image (Ensure cap.png is in your static folder) -->
+                    <img src="{{ url_for('static', filename='cap.png') }}" alt="Graduation Cap" class="w-full h-full object-contain relative z-10 drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)]">
                 </div>
             </div>
 
