@@ -530,8 +530,14 @@ def admin():
             section = request.form.get('section')
             order_num = request.form.get('order_num')
             video_file = request.files.get('video_file')
+            direct_url = request.form.get('direct_url') # പുതിയത്: ലിങ്ക് വഴിയുള്ള അപ്‌ലോഡ്
             
-            if video_file and video_file.filename != '':
+            cloud_video_url = ""
+            
+            # ലിങ്ക് കൊടുത്തിട്ടുണ്ടെങ്കിൽ അത് എടുക്കുന്നു, അല്ലെങ്കിൽ ഫയൽ Cloudinary-ലേക്ക് കയറ്റുന്നു
+            if direct_url and direct_url.strip() != "":
+                cloud_video_url = direct_url.strip()
+            elif video_file and video_file.filename != '':
                 try:
                     upload_result = cloudinary.uploader.upload(
                         video_file, 
@@ -539,11 +545,13 @@ def admin():
                         folder="brinshell_videos"
                     )
                     cloud_video_url = upload_result.get('secure_url')
-                    new_video = Video(title=title, video_url=cloud_video_url, category=category, section=section, order_num=int(order_num))
-                    db.session.add(new_video)
-                    db.session.commit()
                 except Exception as e:
                     print(f"Error uploading to Cloudinary: {e}")
+            
+            if cloud_video_url:
+                new_video = Video(title=title, video_url=cloud_video_url, category=category, section=section, order_num=int(order_num))
+                db.session.add(new_video)
+                db.session.commit()
                 
         elif action == 'reply_doubt':
             message_id = request.form.get('message_id')
@@ -577,12 +585,9 @@ def admin():
 
     total_revenue = 0
     for u in users:
-        if u.plan == 'pro':
-            total_revenue += 499
-        elif u.plan == 'plus':
-            total_revenue += 899
-        elif u.plan == 'premium':
-            total_revenue += 1499
+        if u.plan == 'pro': total_revenue += 499
+        elif u.plan == 'plus': total_revenue += 899
+        elif u.plan == 'premium': total_revenue += 1499
 
     return render_template('admin.html', videos=videos, users=users, messages=messages, total_revenue=total_revenue)
 
