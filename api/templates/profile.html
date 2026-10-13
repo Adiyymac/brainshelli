@@ -20,23 +20,9 @@
 
     <!-- Preloader Included -->
     {% include 'preloader.html' %}
-
+    {% include 'navbar.html' %}
     <!-- DESKTOP: Floating Dynamic Island Top Bar -->
-    <nav class="hidden md:flex dynamic-nav fixed top-6 left-1/2 transform -translate-x-1/2 w-fit min-w-[650px] glass-panel rounded-full px-8 py-4 justify-between items-center z-50 shadow-[0_20px_50px_-12px_rgba(79,70,229,0.6)] border border-indigo-400/40">
-        <div class="flex items-center gap-6">
-            <h1 class="text-xl font-black tracking-widest bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">BRIN SHELL</h1>
-            {% if user.plan != 'none' %}
-                <span class="bg-indigo-900/50 text-indigo-300 px-3 py-1 rounded-full text-[10px] font-bold border border-indigo-500/50 uppercase tracking-widest shadow-inner">{{ user.plan }} BATCH</span>
-            {% endif %}
-        </div>
-        
-        <div class="flex items-center gap-8">
-            <a href="/dashboard" class="text-sm font-bold text-gray-300 hover:text-white hover:drop-shadow-[0_0_10px_rgba(129,140,248,0.9)] transition-all">Dashboard</a>
-            <a href="/profile" class="text-sm font-bold text-white drop-shadow-[0_0_10px_rgba(129,140,248,0.9)] transition-all">Settings</a>
-            <div class="w-px h-5 bg-gray-700"></div>
-            <a href="/logout" class="text-sm font-bold text-red-400 hover:text-red-300 hover:drop-shadow-[0_0_10px_rgba(248,113,113,0.9)] transition-all">Logout</a>
-        </div>
-    </nav>
+   
 
     <!-- MOBILE: Simple Top Header -->
     <div class="md:hidden flex justify-between items-center p-5 w-full bg-gray-950/80 backdrop-blur-md fixed top-0 z-40 border-b border-gray-800/50">
