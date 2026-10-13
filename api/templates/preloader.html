@@ -49,11 +49,25 @@
 
 <!-- PRELOADER SCRIPT -->
 <script>
+    // Page load aavan thudangunna samayam save cheyyunnu
+    const startTime = Date.now();
+    const minLoadingTime = 3000; // Minimum 3 seconds (3000 milliseconds)
+
     window.addEventListener('load', function() {
-        const preloader = document.getElementById('brin-preloader');
-        if(preloader){
-            preloader.classList.add('preloader-fade-out');
-            setTimeout(() => { preloader.style.display = 'none'; }, 800);
-        }
+        // Page load aavan edutha samayam kandupidikkunnu
+        const elapsedTime = Date.now() - startTime;
+        
+        // 3 second thikayan iniyum ethra samayam venam ennu kanakkakkunnu
+        const remainingTime = Math.max(0, minLoadingTime - elapsedTime);
+
+        // Aa samayam koodi wait cheytha shesham mathram fade out aakkunnu
+        setTimeout(() => {
+            const preloader = document.getElementById('brin-preloader');
+            if(preloader){
+                preloader.classList.add('preloader-fade-out');
+                // Fade out animation poornamayum theeran 800ms wait cheyyunnu
+                setTimeout(() => { preloader.style.display = 'none'; }, 800);
+            }
+        }, remainingTime);
     });
 </script>
