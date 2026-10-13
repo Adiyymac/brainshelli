@@ -16,9 +16,27 @@
         /* Floating Nav Animation */
         .dynamic-nav { animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes slideDown { from { transform: translate(-50%, -100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+        
+        /* Preloader Custom Animations */
+        .spin-reverse { animation: spin-reverse 1.5s linear infinite; }
+        @keyframes spin-reverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+        .preloader-fade-out { opacity: 0; visibility: hidden; transition: opacity 0.8s ease-out, visibility 0.8s ease-out; }
     </style>
 </head>
 <body class="bg-gray-950 text-white font-sans min-h-screen flex flex-col pb-24 md:pb-0">
+
+    <!-- PRELOADER (Loading Screen) -->
+    <div id="brin-preloader" class="fixed inset-0 z-[100] bg-gray-950 flex flex-col items-center justify-center">
+        <div class="relative w-24 h-24 flex items-center justify-center mb-6">
+            <!-- Glowing Rings -->
+            <div class="absolute inset-0 rounded-full border-t-4 border-indigo-500 animate-spin shadow-[0_0_15px_#6366f1]"></div>
+            <div class="absolute inset-2 rounded-full border-r-4 border-purple-500 spin-reverse shadow-[0_0_15px_#a855f7]"></div>
+            <div class="absolute inset-4 rounded-full border-b-4 border-teal-400 animate-spin" style="animation-duration: 2s;"></div>
+            <!-- Center Text -->
+            <div class="text-white font-black text-xs tracking-[0.2em] absolute animate-pulse">BRIN</div>
+        </div>
+        <h2 class="text-sm font-extrabold tracking-[0.4em] bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-500 animate-pulse">LOADING</h2>
+    </div>
 
     <!-- DESKTOP: Floating Dynamic Island Top Bar -->
     <nav class="hidden md:flex dynamic-nav fixed top-6 left-1/2 transform -translate-x-1/2 w-fit min-w-[650px] glass-panel rounded-full px-8 py-4 justify-between items-center z-50 shadow-[0_20px_50px_-12px_rgba(79,70,229,0.6)] border border-indigo-400/40">
@@ -41,7 +59,7 @@
         <span class="bg-indigo-600/20 text-indigo-400 px-3 py-1 rounded-full text-[10px] font-bold border border-indigo-500/30 uppercase">{{ plan }}</span>
     </div>
 
-    <!-- Main Content Area (Added pt-28 for desktop to avoid hiding behind floating nav) -->
+    <!-- Main Content Area -->
     <div class="flex-grow max-w-7xl mx-auto w-full p-4 sm:p-6 pt-20 md:pt-32 grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
         
         <!-- Left Side: Video Player, Profile & Messages -->
@@ -210,7 +228,7 @@
         </div>
     </div>
 
-    <!-- MOBILE: Bottom Floating Navigation (iPhone Dynamic Style) -->
+    <!-- MOBILE: Bottom Floating Navigation -->
     <div class="md:hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] max-w-[350px] glass-panel rounded-full px-6 py-3.5 flex justify-between items-center z-50 shadow-[0_10px_40px_rgba(0,0,0,0.8)] border border-indigo-500/40 backdrop-blur-xl">
         <a href="/dashboard" class="nav-icon text-gray-400 hover:text-indigo-400 transition flex flex-col items-center gap-1">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
@@ -229,6 +247,17 @@
             <span class="text-[9px] font-bold tracking-wider">LOGOUT</span>
         </a>
     </div>
+
+    <!-- PRELOADER SCRIPT (Hides the loading screen once page is ready) -->
+    <script>
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('brin-preloader');
+            // Adding fade-out class
+            preloader.classList.add('preloader-fade-out');
+            // Remove from DOM after animation completes
+            setTimeout(() => { preloader.style.display = 'none'; }, 800);
+        });
+    </script>
 
 {% if active_video %}
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
