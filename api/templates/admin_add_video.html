@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Admin - Add Video | BRIN SHELL</title>
+    {% include 'meta.html' %}
+</head>
+<body class="text-gray-200 antialiased min-h-screen flex items-center justify-center p-4 relative">
+    
+    <!-- Background Design -->
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-teal-900/20 rounded-full blur-[100px] pointer-events-none"></div>
+
+    <div class="glass-panel p-8 sm:p-10 rounded-3xl w-full max-w-2xl shadow-2xl relative overflow-hidden z-10 border border-teal-500/30">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-500 to-emerald-500"></div>
+        
+        <div class="mb-8 flex items-center justify-between border-b border-teal-900/50 pb-4">
+            <div>
+                <h2 class="text-2xl font-extrabold text-white mb-1 flex items-center gap-2">
+                    <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                    Add New Course Video
+                </h2>
+                <p class="text-xs text-gray-400 uppercase tracking-widest">Admin Control Panel</p>
+            </div>
+            <a href="/dashboard" class="bg-[#011413] border border-teal-900 text-teal-400 hover:text-white hover:bg-teal-900/50 px-4 py-2 rounded-xl text-xs font-bold transition">Back to Dashboard</a>
+        </div>
+        
+        <form method="POST" class="space-y-6">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Video Title -->
+                <div class="md:col-span-2">
+                    <label class="block text-teal-400 text-xs font-bold mb-2 uppercase tracking-[0.1em]">Video Title</label>
+                    <input type="text" name="title" required placeholder="e.g. Introduction to Python" class="w-full p-4 rounded-xl bg-[#011413] border border-teal-900/50 text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition shadow-inner">
+                </div>
+
+                <!-- Video URL (Direct Link) -->
+                <div class="md:col-span-2">
+                    <label class="block text-teal-400 text-xs font-bold mb-2 uppercase tracking-[0.1em]">Video URL (Direct Link)</label>
+                    <input type="url" name="video_url" required placeholder="https://res.cloudinary.com/.../video.mp4" class="w-full p-4 rounded-xl bg-[#011413] border border-teal-900/50 text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition shadow-inner">
+                    <p class="text-[10px] text-gray-500 mt-1.5 ml-1">* Upload to Cloudinary/AWS and paste the .mp4 or .m3u8 link here.</p>
+                </div>
+
+                <!-- Section Name -->
+                <div>
+                    <label class="block text-teal-400 text-xs font-bold mb-2 uppercase tracking-[0.1em]">Section Name</label>
+                    <input type="text" name="section" required placeholder="e.g. Module 1: Basics" class="w-full p-4 rounded-xl bg-[#011413] border border-teal-900/50 text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition shadow-inner">
+                </div>
+
+                <!-- Order Number -->
+                <div>
+                    <label class="block text-teal-400 text-xs font-bold mb-2 uppercase tracking-[0.1em]">Order Number</label>
+                    <input type="number" name="order_num" required min="1" placeholder="e.g. 1, 2, 3..." class="w-full p-4 rounded-xl bg-[#011413] border border-teal-900/50 text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition shadow-inner">
+                </div>
+            </div>
+            
+            <button type="submit" class="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white p-4 rounded-xl font-bold tracking-[0.15em] uppercase text-sm shadow-[0_0_20px_rgba(20,184,166,0.3)] transition transform hover:-translate-y-1 mt-4">
+                Publish Video
+            </button>
+        </form>
+    </div>
+</body>
+</html>
