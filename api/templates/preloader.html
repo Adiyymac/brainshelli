@@ -1,0 +1,28 @@
+<style>
+    /* Preloader Animations */
+    .spin-reverse { animation: spin-reverse 1.5s linear infinite; }
+    @keyframes spin-reverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+    .preloader-fade-out { opacity: 0; visibility: hidden; transition: opacity 0.8s ease-out, visibility 0.8s ease-out; }
+</style>
+
+<!-- PRELOADER (Loading Screen) -->
+<div id="brin-preloader" class="fixed inset-0 z-[100] bg-gray-950 flex flex-col items-center justify-center">
+    <div class="relative w-24 h-24 flex items-center justify-center mb-6">
+        <div class="absolute inset-0 rounded-full border-t-4 border-indigo-500 animate-spin shadow-[0_0_15px_#6366f1]"></div>
+        <div class="absolute inset-2 rounded-full border-r-4 border-purple-500 spin-reverse shadow-[0_0_15px_#a855f7]"></div>
+        <div class="absolute inset-4 rounded-full border-b-4 border-teal-400 animate-spin" style="animation-duration: 2s;"></div>
+        <div class="text-white font-black text-xs tracking-[0.2em] absolute animate-pulse">BRIN</div>
+    </div>
+    <h2 class="text-sm font-extrabold tracking-[0.4em] bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-500 animate-pulse">LOADING</h2>
+</div>
+
+<!-- PRELOADER SCRIPT -->
+<script>
+    window.addEventListener('load', function() {
+        const preloader = document.getElementById('brin-preloader');
+        if(preloader){
+            preloader.classList.add('preloader-fade-out');
+            setTimeout(() => { preloader.style.display = 'none'; }, 800);
+        }
+    });
+</script>
