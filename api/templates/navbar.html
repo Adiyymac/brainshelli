@@ -1,17 +1,29 @@
-<!-- DESKTOP: Floating Dynamic Island Top Bar -->
-<nav class="hidden md:flex dynamic-nav fixed top-6 left-1/2 transform -translate-x-1/2 w-fit min-w-[650px] glass-panel rounded-full px-8 py-4 justify-between items-center z-50 shadow-[0_20px_50px_-12px_rgba(79,70,229,0.6)] border border-indigo-400/40">
-    <div class="flex items-center gap-6">
-        <h1 class="text-xl font-black tracking-widest bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">BRIN SHELL</h1>
+<!-- DESKTOP: Floating Dynamic Island Top Bar (Icons Only) -->
+<nav class="hidden md:flex dynamic-nav fixed top-6 left-1/2 transform -translate-x-1/2 w-fit min-w-[400px] glass-panel rounded-full px-8 py-3.5 justify-between items-center z-50 shadow-[0_20px_50px_-12px_rgba(79,70,229,0.6)] border border-indigo-400/40">
+    <div class="flex items-center gap-4">
+        <h1 class="text-xl font-black tracking-widest bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">BRIN</h1>
         {% if user and user.plan != 'none' %}
-            <!--span class="bg-indigo-900/50 text-indigo-300 px-3 py-1 rounded-full text-[10px] font-bold border border-indigo-500/50 uppercase tracking-widest shadow-inner">{{ user.plan }} BATCH</span-->
+            <span class="bg-indigo-900/50 text-indigo-300 px-2.5 py-1 rounded-full text-[9px] font-bold border border-indigo-500/50 uppercase tracking-widest shadow-inner">{{ user.plan }}</span>
         {% endif %}
     </div>
     
-    <div class="flex items-center gap-8">
-        <a href="/dashboard" class="text-sm font-bold {% if '/profile' not in request.path %}text-white drop-shadow-[0_0_10px_rgba(129,140,248,0.9)]{% else %}text-gray-300 hover:text-white hover:drop-shadow-[0_0_10px_rgba(129,140,248,0.9)]{% endif %} transition-all">Dashboard</a>
-        <a href="/profile" class="text-sm font-bold {% if '/profile' in request.path %}text-white drop-shadow-[0_0_10px_rgba(129,140,248,0.9)]{% else %}text-gray-300 hover:text-white hover:drop-shadow-[0_0_10px_rgba(129,140,248,0.9)]{% endif %} transition-all">My Profile</a>
-        <div class="w-px h-5 bg-gray-700"></div>
-        <a href="/logout" class="text-sm font-bold text-red-400 hover:text-red-300 hover:drop-shadow-[0_0_10px_rgba(248,113,113,0.9)] transition-all">Logout</a>
+    <div class="flex items-center gap-4 ml-6">
+        <!-- Dashboard Icon -->
+        <a href="/dashboard" title="Dashboard" class="p-2.5 rounded-full transition-all duration-300 {% if '/profile' not in request.path %}bg-indigo-600/20 text-indigo-400 shadow-[0_0_15px_rgba(79,70,229,0.4)]{% else %}text-gray-400 hover:text-indigo-300 hover:bg-gray-800{% endif %}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+        </a>
+        
+        <!-- Profile Icon -->
+        <a href="/profile" title="My Profile" class="p-2.5 rounded-full transition-all duration-300 {% if '/profile' in request.path %}bg-indigo-600/20 text-indigo-400 shadow-[0_0_15px_rgba(79,70,229,0.4)]{% else %}text-gray-400 hover:text-indigo-300 hover:bg-gray-800{% endif %}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+        </a>
+        
+        <div class="w-px h-6 bg-gray-700/50 mx-1"></div>
+        
+        <!-- Logout Icon -->
+        <a href="/logout" title="Logout" class="p-2.5 rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-300">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+        </a>
     </div>
 </nav>
 
