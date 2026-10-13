@@ -51,14 +51,55 @@
                 </div>
             </div>
 
-            <!-- Right Side: Original Image Cap -->
+            <!-- Right Side: 3D Code-based Cap -->
             <div class="w-full md:w-2/5 flex justify-center items-center mb-10 md:mb-0">
-                <div class="animate-cap relative w-64 h-64 md:w-96 md:h-96">
+                <div class="animate-cap relative w-64 h-64 md:w-[400px] md:h-[400px]">
                     <!-- Image Background Glow -->
-                    <div class="absolute inset-0 bg-teal-500/30 blur-[70px] rounded-full scale-110"></div>
+                    <div class="absolute inset-0 bg-teal-500/20 blur-[70px] rounded-full scale-110"></div>
                     
-                    <!-- Original Cap Image (Ensure cap.png is in your static folder) -->
-                    <img src="{{ url_for('static', filename='cap.png') }}" alt="Graduation Cap" class="w-full h-full object-contain relative z-10 drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)]">
+                    <!-- 3D SVG Graduation Cap generated via Code -->
+                    <svg class="w-full h-full relative z-10 drop-shadow-[0_25px_35px_rgba(0,0,0,0.8)]" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <!-- Gradients for realistic 3D look -->
+                            <linearGradient id="boardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#374151" />
+                                <stop offset="100%" stop-color="#111827" />
+                            </linearGradient>
+                            <linearGradient id="baseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#1f2937" />
+                                <stop offset="50%" stop-color="#374151" />
+                                <stop offset="100%" stop-color="#111827" />
+                            </linearGradient>
+                            <linearGradient id="tasselGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#2dd4bf" />
+                                <stop offset="100%" stop-color="#0f766e" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- Base (Skull cap portion) -->
+                        <path d="M 60 75 Q 100 115 140 75 L 140 105 Q 100 135 60 105 Z" fill="url(#baseGrad)" />
+                        <!-- Base inner shadow -->
+                        <path d="M 60 75 Q 100 115 140 75 Q 100 95 60 75 Z" fill="#000000" opacity="0.7" />
+                        
+                        <!-- Mortarboard (Top Square) -->
+                        <polygon points="100,20 180,50 100,80 20,50" fill="url(#boardGrad)" />
+                        <!-- Mortarboard Edge (Thickness) -->
+                        <polygon points="20,50 100,80 100,86 20,56" fill="#030712" />
+                        <polygon points="100,80 180,50 180,56 100,86" fill="#1f2937" />
+                        
+                        <!-- Tassel string hanging down -->
+                        <path d="M 100 50 Q 150 55 165 95" fill="none" stroke="#14b8a6" stroke-width="1.5" />
+                        
+                        <!-- Tassel brush -->
+                        <polygon points="163,95 167,95 171,120 159,120" fill="url(#tasselGrad)" />
+                        <circle cx="165" cy="95" r="3.5" fill="#0f766e" />
+                        
+                        <!-- Center Button on top -->
+                        <ellipse cx="100" cy="50" rx="7" ry="3.5" fill="#0f766e" />
+                        <ellipse cx="100" cy="49" rx="7" ry="3.5" fill="#14b8a6" />
+                        <ellipse cx="100" cy="48" rx="5" ry="2" fill="#2dd4bf" />
+                    </svg>
+
                 </div>
             </div>
 
@@ -76,6 +117,7 @@
                     <h3 class="text-xl font-bold text-white mb-3">Secure Portal</h3>
                     <p class="text-gray-400 text-sm leading-relaxed">Your content is locked in a highly secure environment. No distractions, just focused learning.</p>
                 </div>
+                <!-- ... ബാക്കി ഫീച്ചറുകൾ മാറ്റമില്ലാതെ തുടരുന്നു ... -->
                 <div class="card-glass p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-300">
                     <div class="w-12 h-12 bg-teal-900/50 rounded-xl flex items-center justify-center mb-6 border border-teal-800">
                         <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
@@ -96,6 +138,7 @@
 
     <!-- Pricing Section -->
     <section id="pricing" class="py-24 px-6 relative z-10">
+        <!-- ... പ്രൈസിങ് സെക്ഷൻ മാറ്റമില്ലാതെ തുടരുന്നു ... -->
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="text-4xl font-extrabold text-white mb-4 text-glow">Choose your path.</h2>
