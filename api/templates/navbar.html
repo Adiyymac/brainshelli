@@ -1,20 +1,20 @@
-<!-- DESKTOP: Floating Dynamic Island Top Bar -->
-<nav class="hidden md:flex dynamic-nav fixed top-6 left-1/2 transform -translate-x-1/2 w-fit min-w-[400px] glass-panel rounded-full px-8 py-3.5 justify-between items-center z-50 shadow-[0_20px_50px_-12px_rgba(79,70,229,0.6)] border border-indigo-400/40">
+<!-- DESKTOP: Floating Dynamic Island Top Bar (Icons Only) -->
+<nav class="hidden md:flex dynamic-nav fixed top-6 left-1/2 transform -translate-x-1/2 w-fit min-w-[400px] bg-[#021a18]/70 backdrop-blur-xl rounded-full px-8 py-3.5 justify-between items-center z-50 shadow-[0_10px_30px_rgba(20,184,166,0.15)] border border-teal-500/30">
     <div class="flex items-center gap-4">
-        <h1 class="text-xl font-black tracking-widest bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">BRIN</h1>
+        <h1 class="text-xl font-black tracking-widest text-white text-glow">BRIN</h1>
         {% if session.get('user_email') and user and user.plan != 'none' %}
-            <span class="bg-indigo-900/50 text-indigo-300 px-2.5 py-1 rounded-full text-[9px] font-bold border border-indigo-500/50 uppercase tracking-widest shadow-inner">{{ user.plan }}</span>
+            <span class="bg-teal-900/50 text-teal-300 px-2.5 py-1 rounded-full text-[9px] font-bold border border-teal-500/50 uppercase tracking-widest shadow-inner">{{ user.plan }}</span>
         {% endif %}
     </div>
     
     <div class="flex items-center gap-4 ml-6">
         {% if session.get('user_email') %}
             <!-- LOGGED IN OPTIONS (Icons) -->
-            <a href="/dashboard" title="Dashboard" class="p-2.5 rounded-full transition-all duration-300 {% if request.path == '/dashboard' or request.path.startswith('/portal') %}bg-indigo-600/20 text-indigo-400 shadow-[0_0_15px_rgba(79,70,229,0.4)]{% else %}text-gray-400 hover:text-indigo-300 hover:bg-gray-800{% endif %}">
+            <a href="/dashboard" title="Dashboard" class="p-2.5 rounded-full transition-all duration-300 {% if request.path == '/dashboard' or request.path.startswith('/portal') %}bg-teal-600/20 text-teal-400 shadow-[0_0_15px_rgba(20,184,166,0.4)]{% else %}text-gray-400 hover:text-teal-300 hover:bg-teal-900/30{% endif %}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
             </a>
             
-            <a href="/profile" title="My Profile" class="p-2.5 rounded-full transition-all duration-300 {% if request.path == '/profile' %}bg-indigo-600/20 text-indigo-400 shadow-[0_0_15px_rgba(79,70,229,0.4)]{% else %}text-gray-400 hover:text-indigo-300 hover:bg-gray-800{% endif %}">
+            <a href="/profile" title="My Profile" class="p-2.5 rounded-full transition-all duration-300 {% if request.path == '/profile' %}bg-teal-600/20 text-teal-400 shadow-[0_0_15px_rgba(20,184,166,0.4)]{% else %}text-gray-400 hover:text-teal-300 hover:bg-teal-900/30{% endif %}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
             </a>
             
@@ -26,34 +26,34 @@
         {% else %}
             <!-- PUBLIC OPTIONS (Login Button) -->
             <a href="/" class="text-sm font-bold text-gray-300 hover:text-white transition">Home</a>
-            <div class="w-px h-5 bg-gray-700/50 mx-2"></div>
-            <a href="/login" class="text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-500 px-5 py-2 rounded-full transition shadow-[0_0_15px_rgba(79,70,229,0.4)]">Login</a>
+            <div class="w-px h-5 bg-teal-800/50 mx-2"></div>
+            <a href="/login" class="text-sm font-bold text-white bg-teal-600 hover:bg-teal-500 px-5 py-2 rounded-full transition shadow-[0_0_15px_rgba(20,184,166,0.4)]">Login</a>
         {% endif %}
     </div>
 </nav>
 
 <!-- MOBILE: Simple Top Header -->
-<div class="md:hidden flex justify-between items-center p-5 w-full bg-gray-950/80 backdrop-blur-md fixed top-0 z-40 border-b border-gray-800/50">
-    <h1 class="text-xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-500">BRIN SHELL</h1>
-    <span class="bg-indigo-600/20 text-indigo-400 px-3 py-1 rounded-full text-[10px] font-bold border border-indigo-500/30 uppercase">
+<div class="md:hidden flex justify-between items-center p-5 w-full bg-[#021a18]/90 backdrop-blur-md fixed top-0 z-40 border-b border-teal-900/40 shadow-sm">
+    <h1 class="text-xl font-extrabold text-white text-glow">BRIN SHELL</h1>
+    <span class="bg-teal-900/40 text-teal-400 px-3 py-1 rounded-full text-[10px] font-bold border border-teal-500/30 uppercase">
         {% if session.get('user_email') %} PORTAL {% else %} WELCOME {% endif %}
     </span>
 </div>
 
 <!-- MOBILE: Bottom Floating Navigation -->
-<div class="md:hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] max-w-[350px] glass-panel rounded-full px-6 py-3.5 flex justify-between items-center z-50 shadow-[0_10px_40px_rgba(0,0,0,0.8)] border border-indigo-500/40 backdrop-blur-xl">
+<div class="md:hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] max-w-[350px] bg-[#021a18]/80 backdrop-blur-xl rounded-full px-6 py-3.5 flex justify-between items-center z-50 shadow-[0_10px_40px_rgba(0,0,0,0.9)] border border-teal-500/40">
     
     {% if session.get('user_email') %}
         <!-- LOGGED IN MOBILE NAV -->
-        <a href="/dashboard" class="nav-icon {% if request.path == '/dashboard' %}text-indigo-400{% else %}text-gray-400 hover:text-indigo-400{% endif %} transition flex flex-col items-center gap-1">
+        <a href="/dashboard" class="nav-icon {% if request.path == '/dashboard' %}text-teal-400{% else %}text-gray-400 hover:text-teal-400{% endif %} transition flex flex-col items-center gap-1">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
             <span class="text-[9px] font-bold tracking-wider">HOME</span>
         </a>
-        <a href="{% if '/profile' in request.path %}/dashboard#course-modules{% else %}#course-modules{% endif %}" class="nav-icon text-gray-400 hover:text-indigo-400 transition flex flex-col items-center gap-1">
+        <a href="{% if '/profile' in request.path %}/dashboard#course-modules{% else %}#course-modules{% endif %}" class="nav-icon text-gray-400 hover:text-teal-400 transition flex flex-col items-center gap-1">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             <span class="text-[9px] font-bold tracking-wider">MODULES</span>
         </a>
-        <a href="/profile" class="nav-icon {% if request.path == '/profile' %}text-indigo-400{% else %}text-gray-400 hover:text-indigo-400{% endif %} transition flex flex-col items-center gap-1">
+        <a href="/profile" class="nav-icon {% if request.path == '/profile' %}text-teal-400{% else %}text-gray-400 hover:text-teal-400{% endif %} transition flex flex-col items-center gap-1">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
             <span class="text-[9px] font-bold tracking-wider">PROFILE</span>
         </a>
@@ -63,12 +63,12 @@
         </a>
     {% else %}
         <!-- PUBLIC MOBILE NAV -->
-        <a href="/" class="nav-icon {% if request.path == '/' %}text-indigo-400{% else %}text-gray-400 hover:text-indigo-400{% endif %} transition flex flex-col items-center gap-1 w-1/2">
+        <a href="/" class="nav-icon {% if request.path == '/' %}text-teal-400{% else %}text-gray-400 hover:text-teal-400{% endif %} transition flex flex-col items-center gap-1 w-1/2">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
             <span class="text-[9px] font-bold tracking-wider">HOME</span>
         </a>
-        <div class="w-px h-8 bg-gray-700/50"></div>
-        <a href="/login" class="nav-icon text-gray-400 hover:text-indigo-400 transition flex flex-col items-center gap-1 w-1/2">
+        <div class="w-px h-8 bg-teal-900/50"></div>
+        <a href="/login" class="nav-icon text-gray-400 hover:text-teal-400 transition flex flex-col items-center gap-1 w-1/2">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
             <span class="text-[9px] font-bold tracking-wider">LOGIN</span>
         </a>
