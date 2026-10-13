@@ -1,114 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings - BRIN SHELL</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .glass-panel { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .nav-icon:active { transform: scale(0.9); }
-        .dynamic-nav { animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-        @keyframes slideDown { from { transform: translate(-50%, -100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #111827; }
-        ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
-    </style>
+    {% include 'meta.html' %}
 </head>
-<body class="bg-gray-950 text-white font-sans min-h-screen flex flex-col pb-24 md:pb-0">
+<body class="text-gray-200 antialiased selection:bg-teal-600 selection:text-white min-h-screen flex flex-col pb-24 md:pb-0 relative">
 
-    <!-- Preloader Included -->
+    <div class="fixed top-1/4 right-1/4 w-[600px] h-[600px] bg-teal-900/20 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
     {% include 'preloader.html' %}
     {% include 'navbar.html' %}
-    <!-- DESKTOP: Floating Dynamic Island Top Bar -->
-   
 
-    <!-- MOBILE: Simple Top Header -->
-    <div class="md:hidden flex justify-between items-center p-5 w-full bg-gray-950/80 backdrop-blur-md fixed top-0 z-40 border-b border-gray-800/50">
-        <h1 class="text-xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-500">BRIN SHELL</h1>
-        <span class="bg-indigo-600/20 text-indigo-400 px-3 py-1 rounded-full text-[10px] font-bold border border-indigo-500/30 uppercase">SETTINGS</span>
-    </div>
-
-    <!-- Main Content Area (Settings Layout) -->
     <div class="flex-grow max-w-6xl mx-auto w-full p-4 sm:p-6 pt-24 md:pt-36 relative z-10">
         
         <div class="mb-8">
-            <h2 class="text-3xl font-extrabold tracking-tight text-white">Account Settings</h2>
+            <h2 class="text-3xl font-extrabold tracking-tight text-white text-glow">Account Settings</h2>
             <p class="text-gray-400 text-sm mt-2">Manage your profile, security, and preferences.</p>
         </div>
 
-        <!-- Form wrapping the grid layout -->
         <form method="POST" enctype="multipart/form-data" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <!-- Left Column: Profile Summary & Photo Upload -->
+            <!-- Left: Profile Summary -->
             <div class="lg:col-span-1">
-                <div class="glass-panel p-8 rounded-3xl border border-gray-800 text-center flex flex-col items-center relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
+                <div class="glass-panel p-8 rounded-3xl text-center flex flex-col items-center relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-500 to-emerald-500"></div>
                     
-                    <!-- Profile Image -->
-                    <div class="relative w-32 h-32 rounded-full overflow-hidden border-4 border-indigo-500/30 shadow-[0_0_30px_rgba(79,70,229,0.3)] bg-gray-900 mb-6 group">
+                    <div class="relative w-32 h-32 rounded-full overflow-hidden border-4 border-teal-500/30 shadow-[0_0_30px_rgba(20,184,166,0.3)] bg-[#011413] mb-6 group">
                         {% if user.profile_photo %}
                             <img src="{{ user.profile_photo }}" alt="Profile" class="w-full h-full object-cover">
                         {% else %}
-                            <div class="w-full h-full flex items-center justify-center text-5xl text-gray-500 font-bold uppercase">
+                            <div class="w-full h-full flex items-center justify-center text-5xl text-teal-600 font-bold uppercase">
                                 {{ user.profile_name[0] if user.profile_name else user.email[0] }}
                             </div>
                         {% endif %}
-                        <!-- Hover Overlay for Photo -->
                         <div class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
                         </div>
                     </div>
 
                     <h3 class="text-xl font-bold text-white mb-1">{{ user.profile_name or 'Student' }}</h3>
                     <p class="text-xs text-gray-400 mb-6">{{ user.email }}</p>
 
-                    <!-- File Input -->
                     <div class="w-full">
-                        <label class="block text-left text-indigo-400 text-xs font-bold mb-2 uppercase tracking-[0.1em]">Update Avatar</label>
-                        <input type="file" name="profile_photo" accept="image/*" class="w-full p-2.5 rounded-xl bg-gray-900/80 border border-gray-700/50 text-gray-300 text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 transition cursor-pointer custom-scrollbar">
+                        <label class="block text-left text-teal-400 text-xs font-bold mb-2 uppercase tracking-[0.1em]">Update Avatar</label>
+                        <input type="file" name="profile_photo" accept="image/*" class="w-full p-2.5 rounded-xl bg-teal-950/30 border border-teal-800/50 text-gray-300 text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-teal-600 file:text-white hover:file:bg-teal-500 transition cursor-pointer custom-scrollbar">
                     </div>
                 </div>
             </div>
 
-            <!-- Right Column: Settings Fields -->
+            <!-- Right: Settings Fields -->
             <div class="lg:col-span-2 space-y-6">
                 
-                <!-- Personal Info Section -->
-                <div class="glass-panel p-8 rounded-3xl border border-gray-800">
+                <div class="glass-panel p-8 rounded-3xl">
                     <h4 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        <svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                         Personal Information
                     </h4>
                     
                     <div class="mb-5">
                         <label class="block text-gray-400 text-xs font-semibold mb-2 uppercase tracking-wider pl-1">Full Name</label>
-                        <input type="text" name="profile_name" value="{{ user.profile_name }}" placeholder="Enter your full name" class="w-full p-4 rounded-2xl bg-gray-950/80 border border-gray-700/50 text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition shadow-inner">
+                        <input type="text" name="profile_name" value="{{ user.profile_name }}" placeholder="Enter your full name" class="w-full p-4 rounded-2xl bg-teal-950/30 border border-teal-800/50 text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition shadow-inner">
                     </div>
 
                     <div class="mb-5 opacity-70">
                         <label class="block text-gray-400 text-xs font-semibold mb-2 uppercase tracking-wider pl-1">Email Address (Read-only)</label>
-                        <input type="email" value="{{ user.email }}" readonly class="w-full p-4 rounded-2xl bg-gray-900/50 border border-gray-800 text-gray-500 cursor-not-allowed">
+                        <input type="email" value="{{ user.email }}" readonly class="w-full p-4 rounded-2xl bg-[#011413] border border-teal-900/50 text-gray-500 cursor-not-allowed">
                     </div>
                 </div>
 
-                <!-- Security Section -->
-                <div class="glass-panel p-8 rounded-3xl border border-gray-800">
+                <div class="glass-panel p-8 rounded-3xl">
                     <h4 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        <svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                         Security Options
                     </h4>
 
                     <div class="mb-2">
                         <label class="block text-gray-400 text-xs font-semibold mb-2 uppercase tracking-wider pl-1">Update Password <span class="text-gray-600 font-normal normal-case tracking-normal">(Optional)</span></label>
-                        <input type="password" name="password" placeholder="Leave blank to keep current password" class="w-full p-4 rounded-2xl bg-gray-950/80 border border-gray-700/50 text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition shadow-inner">
+                        <input type="password" name="password" placeholder="Leave blank to keep current password" class="w-full p-4 rounded-2xl bg-teal-950/30 border border-teal-800/50 text-white focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition shadow-inner">
                     </div>
                 </div>
 
-                <!-- Submit Button -->
                 <div class="flex justify-end pt-2">
-                    <button type="submit" class="w-full sm:w-auto bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white px-10 py-4 rounded-2xl font-bold tracking-wider uppercase text-sm shadow-[0_0_20px_rgba(79,70,229,0.4)] transition transform hover:-translate-y-1">
+                    <button type="submit" class="w-full sm:w-auto bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white px-10 py-4 rounded-2xl font-bold tracking-wider uppercase text-sm shadow-[0_0_20px_rgba(20,184,166,0.4)] transition transform hover:-translate-y-1">
                         Save All Changes
                     </button>
                 </div>
@@ -116,22 +89,5 @@
             
         </form>
     </div>
-
-    <!-- MOBILE: Bottom Floating Navigation -->
-    <div class="md:hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] max-w-[350px] glass-panel rounded-full px-6 py-3.5 flex justify-between items-center z-50 shadow-[0_10px_40px_rgba(0,0,0,0.8)] border border-indigo-500/40 backdrop-blur-xl">
-        <a href="/dashboard" class="nav-icon text-gray-400 hover:text-indigo-400 transition flex flex-col items-center gap-1">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-            <span class="text-[9px] font-bold tracking-wider">HOME</span>
-        </a>
-        <a href="/profile" class="nav-icon text-indigo-400 transition flex flex-col items-center gap-1">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-            <span class="text-[9px] font-bold tracking-wider">SETTINGS</span>
-        </a>
-        <a href="/logout" class="nav-icon text-gray-400 hover:text-red-400 transition flex flex-col items-center gap-1">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-            <span class="text-[9px] font-bold tracking-wider">LOGOUT</span>
-        </a>
-    </div>
-
 </body>
 </html>
