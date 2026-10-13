@@ -97,7 +97,10 @@ def build_otp_email(otp, heading, intro):
         </tr>
         <tr>
           <td align="center" style="padding:24px 28px;">
-            <table cellpadding="0" cellspacing="0"><tr>{digits}</tr></table>
+            <!-- ഈ ഒറ്റ ബോക്സ് കാരണം ഡബിൾ ക്ലിക്ക് ചെയ്താൽ കോഡ് എളുപ്പത്തിൽ കോപ്പി ചെയ്യാം -->
+            <div style="display:inline-block;padding:16px 32px;font-size:36px;font-weight:700;letter-spacing:8px;color:#111827;background:#f3f4f6;border:2px dashed #cbd5e1;border-radius:12px;font-family:Segoe UI,Roboto,Arial,sans-serif;cursor:pointer;">
+              {otp}
+            </div>
           </td>
         </tr>
         <tr>
