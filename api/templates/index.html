@@ -53,55 +53,129 @@
 
             <!-- Right Side: 3D Code-based Cap -->
             <div class="w-full md:w-2/5 flex justify-center items-center mb-10 md:mb-0">
-                <div class="animate-cap relative w-64 h-64 md:w-[400px] md:h-[400px]">
-                    <!-- Image Background Glow -->
-                    <div class="absolute inset-0 bg-teal-500/20 blur-[70px] rounded-full scale-110"></div>
-                    
-                    <!-- 3D SVG Graduation Cap generated via Code -->
-                    <svg class="w-full h-full relative z-10 drop-shadow-[0_25px_35px_rgba(0,0,0,0.8)]" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <!-- Gradients for realistic 3D look -->
-                            <linearGradient id="boardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#374151" />
-                                <stop offset="100%" stop-color="#111827" />
-                            </linearGradient>
-                            <linearGradient id="baseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stop-color="#1f2937" />
-                                <stop offset="50%" stop-color="#374151" />
-                                <stop offset="100%" stop-color="#111827" />
-                            </linearGradient>
-                            <linearGradient id="tasselGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" stop-color="#2dd4bf" />
-                                <stop offset="100%" stop-color="#0f766e" />
-                            </linearGradient>
-                        </defs>
-                        
-                        <!-- Base (Skull cap portion) -->
-                        <path d="M 60 75 Q 100 115 140 75 L 140 105 Q 100 135 60 105 Z" fill="url(#baseGrad)" />
-                        <!-- Base inner shadow -->
-                        <path d="M 60 75 Q 100 115 140 75 Q 100 95 60 75 Z" fill="#000000" opacity="0.7" />
-                        
-                        <!-- Mortarboard (Top Square) -->
-                        <polygon points="100,20 180,50 100,80 20,50" fill="url(#boardGrad)" />
-                        <!-- Mortarboard Edge (Thickness) -->
-                        <polygon points="20,50 100,80 100,86 20,56" fill="#030712" />
-                        <polygon points="100,80 180,50 180,56 100,86" fill="#1f2937" />
-                        
-                        <!-- Tassel string hanging down -->
-                        <path d="M 100 50 Q 150 55 165 95" fill="none" stroke="#14b8a6" stroke-width="1.5" />
-                        
-                        <!-- Tassel brush -->
-                        <polygon points="163,95 167,95 171,120 159,120" fill="url(#tasselGrad)" />
-                        <circle cx="165" cy="95" r="3.5" fill="#0f766e" />
-                        
-                        <!-- Center Button on top -->
-                        <ellipse cx="100" cy="50" rx="7" ry="3.5" fill="#0f766e" />
-                        <ellipse cx="100" cy="49" rx="7" ry="3.5" fill="#14b8a6" />
-                        <ellipse cx="100" cy="48" rx="5" ry="2" fill="#2dd4bf" />
-                    </svg>
+    <div class="animate-cap relative w-64 h-64 md:w-[400px] md:h-[400px]">
+        <!-- Background glow -->
+        <div class="absolute inset-0 bg-teal-500/20 blur-[70px] rounded-full scale-110"></div>
 
-                </div>
-            </div>
+        <!-- Realistic graduation cap (SVG) -->
+        <svg class="w-full h-full relative z-10 drop-shadow-[0_25px_35px_rgba(0,0,0,0.8)]" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Graduation cap with teal tassel">
+            <defs>
+                <!-- Mortarboard top: light from upper left -->
+                <linearGradient id="boardTop" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#4b5563"/>
+                    <stop offset="0.45" stop-color="#1f2937"/>
+                    <stop offset="1" stop-color="#0b0f19"/>
+                </linearGradient>
+                <!-- Soft sheen across the board -->
+                <linearGradient id="boardSheen" x1="0" y1="0" x2="1" y2="0.6">
+                    <stop offset="0" stop-color="#fff" stop-opacity="0.16"/>
+                    <stop offset="0.5" stop-color="#fff" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="edgeLeft" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#111827"/>
+                    <stop offset="1" stop-color="#030712"/>
+                </linearGradient>
+                <linearGradient id="edgeRight" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#1f2937"/>
+                    <stop offset="1" stop-color="#374151"/>
+                </linearGradient>
+                <!-- Skull cap (crown) -->
+                <linearGradient id="crown" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#0b0f19"/>
+                    <stop offset="0.35" stop-color="#2b3340"/>
+                    <stop offset="0.7" stop-color="#1a212c"/>
+                    <stop offset="1" stop-color="#05070c"/>
+                </linearGradient>
+                <!-- Shadow the board casts onto the crown -->
+                <linearGradient id="crownShadow" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#000" stop-opacity="0.85"/>
+                    <stop offset="0.45" stop-color="#000" stop-opacity="0"/>
+                </linearGradient>
+                <radialGradient id="button" cx="0.4" cy="0.3" r="0.8">
+                    <stop offset="0" stop-color="#6b7280"/>
+                    <stop offset="1" stop-color="#111827"/>
+                </radialGradient>
+                <!-- Tassel colours (change these to switch to gold: #fde68a / #b45309) -->
+                <linearGradient id="tasselBody" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#0f766e"/>
+                    <stop offset="0.5" stop-color="#5eead4"/>
+                    <stop offset="1" stop-color="#0f766e"/>
+                </linearGradient>
+                <linearGradient id="tasselBand" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#99f6e4"/>
+                    <stop offset="1" stop-color="#0d9488"/>
+                </linearGradient>
+                <radialGradient id="knot" cx="0.35" cy="0.3" r="0.8">
+                    <stop offset="0" stop-color="#99f6e4"/>
+                    <stop offset="1" stop-color="#0f766e"/>
+                </radialGradient>
+
+                <!-- Fabric grain -->
+                <filter id="grain" x="0" y="0" width="100%" height="100%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4"/>
+                    <feColorMatrix type="saturate" values="0"/>
+                </filter>
+                <clipPath id="boardClip">
+                    <polygon points="200,40 385,105 200,170 15,105"/>
+                </clipPath>
+                <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="2"/>
+                </filter>
+            </defs>
+
+            <!-- Crown: the part that sits on the head -->
+            <path d="M105,148 L200,182 L295,148 L288,215 Q200,262 112,215 Z" fill="url(#crown)"/>
+            <path d="M105,148 L200,182 L295,148 L288,215 Q200,262 112,215 Z" fill="url(#crownShadow)"/>
+            <!-- Fabric folds -->
+            <g fill="none" stroke="#fff" stroke-opacity="0.06" stroke-width="1.5">
+                <path d="M140,160 Q142,200 150,232"/>
+                <path d="M170,172 Q172,212 178,248"/>
+                <path d="M230,172 Q228,212 222,248"/>
+                <path d="M260,160 Q258,200 250,232"/>
+            </g>
+            <!-- Rim at the bottom of the crown -->
+            <path d="M112,215 Q200,262 288,215" fill="none" stroke="#000" stroke-opacity="0.55" stroke-width="3"/>
+
+            <!-- Board thickness -->
+            <polygon points="15,105 200,170 200,182 15,117" fill="url(#edgeLeft)"/>
+            <polygon points="200,170 385,105 385,117 200,182" fill="url(#edgeRight)"/>
+
+            <!-- Board top surface -->
+            <polygon points="200,40 385,105 200,170 15,105" fill="url(#boardTop)"/>
+            <polygon points="200,40 385,105 200,170 15,105" fill="url(#boardSheen)"/>
+            <rect width="400" height="300" filter="url(#grain)" clip-path="url(#boardClip)" opacity="0.14" style="mix-blend-mode:overlay"/>
+            <!-- Stitched border -->
+            <polygon points="200,50 368,108 200,162 32,108" fill="none" stroke="#fff" stroke-opacity="0.1" stroke-width="1" stroke-dasharray="4 4"/>
+            <!-- Edge highlight on the front-right rim -->
+            <polyline points="200,170 385,105" fill="none" stroke="#9ca3af" stroke-opacity="0.35" stroke-width="1"/>
+
+            <!-- Button on top -->
+            <ellipse cx="200" cy="108" rx="11" ry="5" fill="#000" opacity="0.5"/>
+            <ellipse cx="200" cy="104" rx="9" ry="4.5" fill="url(#button)"/>
+            <ellipse cx="198" cy="103" rx="3.5" ry="1.4" fill="#fff" opacity="0.35"/>
+
+            <!-- Cord shadow on the board -->
+            <path d="M200,108 C260,110 330,112 360,116" fill="none" stroke="#000" stroke-opacity="0.45" stroke-width="3" filter="url(#softShadow)"/>
+            <!-- Cord -->
+            <path d="M200,104 C260,106 330,108 360,112 C376,115 381,128 381,143" fill="none" stroke="#0d9488" stroke-width="2.6" stroke-linecap="round"/>
+            <path d="M200,103 C260,105 330,107 360,111 C376,114 381,127 381,142" fill="none" stroke="#99f6e4" stroke-opacity="0.6" stroke-width="0.8" stroke-linecap="round"/>
+
+            <!-- Tassel -->
+            <ellipse cx="381" cy="150" rx="6" ry="7" fill="url(#knot)"/>
+            <rect x="372" y="157" width="18" height="6" rx="2" fill="url(#tasselBand)"/>
+            <path d="M373,163 L389,163 L395,222 Q381,232 367,222 Z" fill="url(#tasselBody)"/>
+            <g stroke="#042f2e" stroke-opacity="0.35" stroke-width="0.8" fill="none">
+                <path d="M375,163 L369,224"/>
+                <path d="M377,163 L373,226"/>
+                <path d="M379,163 L377,228"/>
+                <path d="M381,163 L381,229"/>
+                <path d="M383,163 L385,228"/>
+                <path d="M385,163 L389,226"/>
+                <path d="M387,163 L393,224"/>
+            </g>
+        </svg>
+    </div>
+</div>
 
         </div>
     </section>
