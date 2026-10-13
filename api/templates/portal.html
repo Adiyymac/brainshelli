@@ -12,41 +12,50 @@
         ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         
-        /* Mobile nav active icon animation */
         .nav-icon:active { transform: scale(0.9); }
+        /* Floating Nav Animation */
+        .dynamic-nav { animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes slideDown { from { transform: translate(-50%, -100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
     </style>
 </head>
 <body class="bg-gray-950 text-white font-sans min-h-screen flex flex-col pb-24 md:pb-0">
 
-    <!-- Navbar (Desktop Links added here) -->
-    <nav class="glass-panel sticky top-0 z-50 px-6 py-4 flex justify-between items-center shadow-lg">
-        <div class="flex items-center gap-4">
-            <h1 class="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-500">BRIN SHELL</h1>
-            <span class="bg-indigo-600/20 text-indigo-400 px-3 py-1 rounded-full text-xs font-bold border border-indigo-500/30 hidden sm:inline-block">{{ plan.upper() }} BATCH</span>
+    <!-- DESKTOP: Floating Dynamic Island Top Bar -->
+    <nav class="hidden md:flex dynamic-nav fixed top-6 left-1/2 transform -translate-x-1/2 w-fit min-w-[650px] glass-panel rounded-full px-8 py-4 justify-between items-center z-50 shadow-[0_20px_50px_-12px_rgba(79,70,229,0.6)] border border-indigo-400/40">
+        <div class="flex items-center gap-6">
+            <h1 class="text-xl font-black tracking-widest bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">BRIN SHELL</h1>
+            <span class="bg-indigo-900/50 text-indigo-300 px-3 py-1 rounded-full text-[10px] font-bold border border-indigo-500/50 uppercase tracking-widest shadow-inner">{{ plan }} BATCH</span>
         </div>
         
-        <!-- Desktop Menu (Hidden on Mobile) -->
-        <div class="hidden md:flex items-center gap-6">
-            <a href="/dashboard" class="text-sm font-semibold text-gray-300 hover:text-indigo-400 transition">Dashboard</a>
-            <a href="/profile" class="text-sm font-semibold text-gray-300 hover:text-indigo-400 transition">My Profile</a>
-            <a href="/logout" class="text-sm font-semibold text-gray-400 hover:text-red-400 transition">Logout</a>
+        <div class="flex items-center gap-8">
+            <a href="/dashboard" class="text-sm font-bold text-gray-300 hover:text-white hover:drop-shadow-[0_0_10px_rgba(129,140,248,0.9)] transition-all">Dashboard</a>
+            <a href="/profile" class="text-sm font-bold text-gray-300 hover:text-white hover:drop-shadow-[0_0_10px_rgba(129,140,248,0.9)] transition-all">My Profile</a>
+            <div class="w-px h-5 bg-gray-700"></div>
+            <a href="/logout" class="text-sm font-bold text-red-400 hover:text-red-300 hover:drop-shadow-[0_0_10px_rgba(248,113,113,0.9)] transition-all">Logout</a>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="flex-grow max-w-7xl mx-auto w-full p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- MOBILE: Simple Top Header -->
+    <div class="md:hidden flex justify-between items-center p-5 w-full bg-gray-950/80 backdrop-blur-md fixed top-0 z-40 border-b border-gray-800/50">
+        <h1 class="text-xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-500">BRIN SHELL</h1>
+        <span class="bg-indigo-600/20 text-indigo-400 px-3 py-1 rounded-full text-[10px] font-bold border border-indigo-500/30 uppercase">{{ plan }}</span>
+    </div>
+
+    <!-- Main Content Area (Added pt-28 for desktop to avoid hiding behind floating nav) -->
+    <div class="flex-grow max-w-7xl mx-auto w-full p-4 sm:p-6 pt-20 md:pt-32 grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
         
         <!-- Left Side: Video Player, Profile & Messages -->
         <div class="lg:col-span-2 space-y-6">
             
             <!-- User Profile & Progress Bar -->
-            <div class="glass-panel p-5 rounded-2xl flex flex-col md:flex-row items-center gap-6 border-l-4 border-indigo-500">
+            <div class="glass-panel p-5 rounded-3xl flex flex-col md:flex-row items-center gap-6 border border-gray-800 shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-indigo-500 to-purple-500"></div>
                 {% if user.profile_photo %}
-                    <img src="{{ user.profile_photo }}" alt="Profile" class="w-16 h-16 rounded-full shadow-lg border-2 border-indigo-500/50 object-cover">
+                    <img src="{{ user.profile_photo }}" alt="Profile" class="w-16 h-16 rounded-full shadow-[0_0_20px_rgba(79,70,229,0.4)] border-2 border-indigo-400/50 object-cover z-10">
                 {% else %}
-                    <img src="https://ui-avatars.com/api/?name={{ user.profile_name or user.email }}&background=4f46e5&color=fff&size=64" alt="Profile" class="w-16 h-16 rounded-full shadow-lg border-2 border-indigo-500/50">
+                    <img src="https://ui-avatars.com/api/?name={{ user.profile_name or user.email }}&background=4f46e5&color=fff&size=64" alt="Profile" class="w-16 h-16 rounded-full shadow-[0_0_20px_rgba(79,70,229,0.4)] border-2 border-indigo-400/50 z-10">
                 {% endif %}
-                <div class="flex-grow w-full text-center md:text-left">
+                <div class="flex-grow w-full text-center md:text-left z-10">
                     <h3 class="text-xl font-bold text-white mb-1">Welcome back, {{ user.profile_name or user.email.split('@')[0] }}!</h3>
                     <p class="text-xs text-gray-400 mb-3">Keep going! You're making great progress.</p>
                     
@@ -55,8 +64,8 @@
                         <span class="text-indigo-400">{{ progress }}% Completed</span>
                     </div>
                     <!-- Dynamic Progress Bar -->
-                    <div class="h-2.5 w-full bg-gray-800 rounded-full overflow-hidden shadow-inner">
-                        <div class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-1000 ease-out rounded-full" style="width: {{ progress }}%;"></div>
+                    <div class="h-2.5 w-full bg-gray-900 rounded-full overflow-hidden shadow-inner border border-gray-800">
+                        <div class="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-400 transition-all duration-1000 ease-out rounded-full shadow-[0_0_10px_rgba(79,70,229,0.8)]" style="width: {{ progress }}%;"></div>
                     </div>
                 </div>
             </div>
@@ -64,27 +73,27 @@
             {% if active_video %}
             
             <!-- SECURE HLS VIDEO PLAYER -->
-            <div class="w-full bg-black rounded-2xl overflow-hidden shadow-2xl border border-gray-800 relative aspect-video" oncontextmenu="return false;">
+            <div class="w-full bg-black rounded-3xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.8)] border border-gray-800 relative aspect-video" oncontextmenu="return false;">
                 <video id="securePlayer" controls controlsList="nodownload noplaybackrate" disablePictureInPicture class="w-full h-full outline-none"></video>
             </div>
 
             <!-- Details & Actions -->
-            <div class="glass-panel p-6 rounded-2xl">
+            <div class="glass-panel p-6 rounded-3xl border border-gray-800">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
-                        <h2 class="text-2xl sm:text-3xl font-bold">{{ active_video.title }}</h2>
-                        <p class="text-indigo-400 text-sm mt-1 font-semibold">{{ active_video.section }}</p>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">{{ active_video.title }}</h2>
+                        <p class="text-indigo-400 text-sm mt-2 font-bold uppercase tracking-wider">{{ active_video.section }}</p>
                     </div>
                     
                     <!-- Mark as Completed Form -->
                     <form action="/complete_video" method="POST" class="w-full sm:w-auto mt-2 sm:mt-0">
                         <input type="hidden" name="current_order" value="{{ active_video.order_num }}">
                         {% if user.current_video_order == active_video.order_num %}
-                        <button type="submit" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 px-6 py-3 rounded-xl text-sm font-bold shadow-[0_0_15px_rgba(79,70,229,0.3)] transition transform hover:-translate-y-1">
+                        <button type="submit" class="w-full sm:w-auto bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 px-8 py-3.5 rounded-2xl text-sm font-bold shadow-[0_0_20px_rgba(79,70,229,0.4)] transition transform hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(79,70,229,0.6)]">
                             Mark as Completed
                         </button>
                         {% else %}
-                        <button disabled class="w-full sm:w-auto bg-green-600/30 text-green-400 border border-green-500/30 px-6 py-3 rounded-xl text-sm font-bold cursor-not-allowed flex justify-center items-center gap-2">
+                        <button disabled class="w-full sm:w-auto bg-green-900/30 text-green-400 border border-green-500/30 px-8 py-3.5 rounded-2xl text-sm font-bold cursor-not-allowed flex justify-center items-center gap-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             Completed
                         </button>
@@ -94,77 +103,82 @@
             </div>
 
             <!-- Community Messages Section -->
-            <div class="glass-panel p-6 rounded-2xl">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-gray-800">
+            <div class="glass-panel p-6 rounded-3xl border border-gray-800">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-gray-800/50">
                     <div>
                         <h3 class="text-xl font-bold text-white tracking-wide">Community Discussions</h3>
                         <p class="text-gray-400 text-sm mt-1">Ask doubts and discuss with other students.</p>
                     </div>
                 </div>
 
-                <!-- Post a New Message Form -->
-                <form action="/post_message" method="POST" class="mb-6 bg-gray-900/40 p-4 rounded-xl border border-gray-800">
-                    <textarea name="content" required class="w-full bg-gray-950 border border-gray-700 rounded-lg p-3 text-white text-sm focus:outline-none focus:border-indigo-500 mb-3 custom-scrollbar" rows="2" placeholder="Write your doubt or share your feedback here..."></textarea>
+                <form action="/post_message" method="POST" class="mb-6 bg-gray-900/40 p-4 rounded-2xl border border-gray-800 shadow-inner">
+                    <textarea name="content" required class="w-full bg-gray-950 border border-gray-700/50 rounded-xl p-4 text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 mb-3 custom-scrollbar" rows="2" placeholder="Write your doubt or share your feedback here..."></textarea>
                     <div class="flex justify-end">
-                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg text-xs font-bold transition">Post Message</button>
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition shadow-lg">Post Message</button>
                     </div>
                 </form>
                 
-                <!-- Messages List -->
                 <div class="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                     {% for msg in messages %}
-                    <div class="p-4 rounded-xl bg-gray-900/50 border border-gray-800">
+                    <div class="p-4 rounded-2xl bg-gray-900/60 border border-gray-800 hover:border-gray-700 transition">
                         <div class="flex justify-between items-center mb-3">
                             <div class="flex items-center gap-3">
-                                <img src="https://ui-avatars.com/api/?name={{ msg.user_email }}&background=312e81&color=fff&size=32" alt="Profile" class="w-8 h-8 rounded-full border border-indigo-900">
-                                <span class="font-semibold text-gray-200 text-sm">{{ msg.user_email.split('@')[0] }}</span>
+                                <img src="https://ui-avatars.com/api/?name={{ msg.user_email }}&background=312e81&color=fff&size=32" alt="Profile" class="w-8 h-8 rounded-full border border-indigo-900/50">
+                                <span class="font-bold text-gray-200 text-sm">{{ msg.user_email.split('@')[0] }}</span>
                             </div>
-                            <span class="text-[11px] text-gray-500 font-medium">
+                            <span class="text-[10px] text-gray-500 font-bold uppercase tracking-wider bg-gray-950 px-2 py-1 rounded-md">
                                 {{ msg.timestamp.strftime('%d %b, %H:%M') if msg.timestamp else 'Just now' }}
                             </span>
                         </div>
                         <p class="text-gray-300 text-sm leading-relaxed pl-11">{{ msg.content }}</p>
                         
                         {% if msg.admin_reply %}
-                        <!-- Admin/Mentor Reply -->
-                        <div class="ml-11 mt-4 p-3 rounded-lg bg-indigo-900/20 border-l-2 border-indigo-500">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="bg-indigo-600 text-white text-[10px] px-2 py-0.5 rounded font-bold">Admin</span>
-                                <span class="text-xs text-gray-400">BRIN SHELL Mentor</span>
-                            </div>
-                            <p class="text-indigo-200 text-sm">{{ msg.admin_reply }}</p>
+                        <div class="ml-11 mt-4 p-4 rounded-xl bg-indigo-900/20 border-l-2 border-indigo-400 relative">
+                            <div class="absolute -top-2.5 left-4 bg-indigo-500 text-white text-[9px] px-2 py-0.5 rounded shadow-sm font-bold uppercase tracking-widest">Mentor Reply</div>
+                            <p class="text-indigo-200 text-sm mt-1">{{ msg.admin_reply }}</p>
                         </div>
                         {% endif %}
                     </div>
                     {% else %}
-                    <p class="text-gray-500 text-sm text-center py-4">No messages yet. Be the first to ask a doubt!</p>
+                    <div class="text-center py-8">
+                        <div class="text-4xl mb-3">💬</div>
+                        <p class="text-gray-500 text-sm font-semibold">No messages yet. Be the first to ask a doubt!</p>
+                    </div>
                     {% endfor %}
                 </div>
             </div>
             
             {% else %}
-            <div class="glass-panel p-10 rounded-2xl text-center border-dashed border-2 border-gray-700">
-                <h2 class="text-2xl font-bold text-gray-400">No Classes Available</h2>
+            <div class="glass-panel p-12 rounded-3xl text-center border-dashed border-2 border-gray-700/50 flex flex-col items-center justify-center">
+                <div class="text-5xl mb-4 opacity-50">📭</div>
+                <h2 class="text-2xl font-bold text-gray-400">No Classes Available Yet</h2>
+                <p class="text-sm text-gray-600 mt-2">Videos will appear here once the admin uploads them.</p>
             </div>
             {% endif %}
         </div>
 
         <!-- Right Side: Section-wise Playlist -->
         <div id="course-modules" class="lg:col-span-1 mt-4 lg:mt-0">
-            <div class="glass-panel rounded-2xl p-5 lg:sticky lg:top-24 h-auto lg:h-[calc(100vh-8rem)] overflow-hidden flex flex-col">
-                <h3 class="text-xl font-bold mb-4">Course Modules</h3>
+            <div class="glass-panel rounded-3xl p-6 lg:sticky lg:top-32 h-auto lg:h-[calc(100vh-10rem)] overflow-hidden flex flex-col border border-gray-800">
+                <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                    Course Modules
+                </h3>
                 
-                <div class="overflow-y-auto pr-2 space-y-4 flex-grow custom-scrollbar">
+                <div class="overflow-y-auto pr-2 space-y-6 flex-grow custom-scrollbar">
                     {% for sec_name, sec_videos in sections.items() %}
-                    <div class="mb-4">
-                        <h4 class="text-indigo-400 text-sm font-bold mb-2 uppercase tracking-wider">{{ sec_name }}</h4>
+                    <div>
+                        <h4 class="text-indigo-400 text-xs font-black mb-3 uppercase tracking-[0.2em] px-2">{{ sec_name }}</h4>
                         <div class="space-y-2">
                             {% for v in sec_videos %}
                                 {% if v.order_num <= user.current_video_order %}
                                 <!-- Unlocked Video -->
-                                <a href="?v={{ v.order_num }}" class="block">
-                                    <div class="p-3 rounded-xl border {{ 'bg-indigo-900/40 border-indigo-500 shadow-md' if active_video.id == v.id else 'bg-gray-800/80 border-gray-700 hover:bg-gray-700' }} transition flex gap-3 items-center">
-                                        <div class="w-10 h-8 bg-black rounded flex items-center justify-center flex-shrink-0 {{ 'text-indigo-400' if active_video.id == v.id else 'text-gray-400' }} text-xs font-bold">
+                                <a href="?v={{ v.order_num }}" class="block group">
+                                    <div class="p-3 rounded-2xl border {{ 'bg-indigo-900/40 border-indigo-500 shadow-[0_0_15px_rgba(79,70,229,0.2)]' if active_video.id == v.id else 'bg-gray-900/50 border-gray-800 group-hover:bg-gray-800 group-hover:border-gray-700' }} transition-all flex gap-3 items-center relative overflow-hidden">
+                                        {% if active_video.id == v.id %}
+                                            <div class="absolute left-0 top-0 w-1 h-full bg-indigo-500 shadow-[0_0_10px_#4f46e5]"></div>
+                                        {% endif %}
+                                        <div class="w-10 h-10 bg-black rounded-xl flex items-center justify-center flex-shrink-0 {{ 'text-indigo-400 border border-indigo-500/50' if active_video.id == v.id else 'text-gray-400 border border-gray-800' }} text-xs font-bold shadow-inner">
                                             {% if active_video.id == v.id %}
                                                 <svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path></svg>
                                             {% else %}
@@ -172,18 +186,18 @@
                                             {% endif %}
                                         </div>
                                         <div class="flex-grow overflow-hidden">
-                                            <h4 class="text-sm font-semibold {{ 'text-white' if active_video.id == v.id else 'text-gray-300' }} truncate">{{ v.title }}</h4>
+                                            <h4 class="text-sm font-semibold {{ 'text-white' if active_video.id == v.id else 'text-gray-300' }} truncate group-hover:text-white transition">{{ v.title }}</h4>
                                         </div>
                                     </div>
                                 </a>
                                 {% else %}
                                 <!-- Locked Video -->
-                                <div class="bg-gray-900/50 p-3 rounded-xl border border-gray-800 opacity-50 flex gap-3 items-center cursor-not-allowed">
-                                    <div class="w-10 h-8 bg-black rounded flex items-center justify-center flex-shrink-0 text-gray-600">
-                                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+                                <div class="bg-gray-900/30 p-3 rounded-2xl border border-gray-800/50 opacity-50 flex gap-3 items-center cursor-not-allowed">
+                                    <div class="w-10 h-10 bg-black rounded-xl flex items-center justify-center flex-shrink-0 text-gray-600 border border-gray-800">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
                                     </div>
                                     <div class="flex-grow">
-                                        <h4 class="text-sm font-semibold text-gray-500 truncate">{{ v.title }}</h4>
+                                        <h4 class="text-sm font-semibold text-gray-500 truncate">Locked Class</h4>
                                     </div>
                                 </div>
                                 {% endif %}
@@ -196,35 +210,29 @@
         </div>
     </div>
 
-    <!-- MOBILE BOTTOM FLOATING NAVIGATION (iPhone Dynamic Style) -->
-    <div class="md:hidden fixed bottom-5 left-1/2 transform -translate-x-1/2 w-[90%] max-w-[350px] glass-panel rounded-full px-6 py-3.5 flex justify-between items-center z-50 shadow-[0_10px_40px_rgba(79,70,229,0.3)] border border-indigo-500/40">
-        
+    <!-- MOBILE: Bottom Floating Navigation (iPhone Dynamic Style) -->
+    <div class="md:hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] max-w-[350px] glass-panel rounded-full px-6 py-3.5 flex justify-between items-center z-50 shadow-[0_10px_40px_rgba(0,0,0,0.8)] border border-indigo-500/40 backdrop-blur-xl">
         <a href="/dashboard" class="nav-icon text-gray-400 hover:text-indigo-400 transition flex flex-col items-center gap-1">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
             <span class="text-[9px] font-bold tracking-wider">HOME</span>
         </a>
-        
         <a href="#course-modules" class="nav-icon text-gray-400 hover:text-indigo-400 transition flex flex-col items-center gap-1">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             <span class="text-[9px] font-bold tracking-wider">MODULES</span>
         </a>
-
         <a href="/profile" class="nav-icon text-gray-400 hover:text-indigo-400 transition flex flex-col items-center gap-1">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
             <span class="text-[9px] font-bold tracking-wider">PROFILE</span>
         </a>
-        
         <a href="/logout" class="nav-icon text-gray-400 hover:text-red-400 transition flex flex-col items-center gap-1">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
             <span class="text-[9px] font-bold tracking-wider">LOGOUT</span>
         </a>
     </div>
 
-<!-- HLS.js Security Script & Context Menu Block -->
 {% if active_video %}
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script>
-    // Secure Video Player Setup (Converts link to un-downloadable Blob)
     var video = document.getElementById('securePlayer');
     var videoSrc = "{{ url_for('static', filename='videos/' ~ active_video.video_url) }}";
     
@@ -233,16 +241,13 @@
         hls.loadSource(videoSrc);
         hls.attachMedia(video);
         hls.on(Hls.Events.MANIFEST_PARSED, function() { video.play(); });
-    } 
-    else {
-        // Fallback for MP4 to Blob URL for additional security
+    } else {
         fetch(videoSrc).then(response => response.blob()).then(blob => {
             const blobUrl = URL.createObjectURL(blob);
             video.src = blobUrl;
         });
     }
 
-    // Disable Right Click & Keyboard Shortcuts
     if(video) {
         video.addEventListener('contextmenu', function(e) { e.preventDefault(); });
         document.addEventListener('keydown', function(e) {
