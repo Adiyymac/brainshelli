@@ -135,6 +135,7 @@ class User(db.Model):
     current_video_order = db.Column(db.Integer, default=1) 
     auth_provider = db.Column(db.String(20), default='email')
     profile_name = db.Column(db.String(100), default="Student")
+    profile_photo = db.Column(db.String(500), nullable=True)
 
 class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -418,7 +419,37 @@ def post_message():
         db.session.add(new_msg)
         db.session.commit()
     return redirect(request.referrer)
-
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    user = check_auth()
+    if not user: return redirect(url_for('login'))
+    
+    if request.method == 'POST':
+        name = request.form.get('profile_name')
+        password = request.form.get('password')
+        photo = request.files.get('profile_photo')
+        
+        if name:
+            user.profile_name = name
+            
+        if password:
+            user.password = generate_password_hash(password)
+            
+        if photo and photo.filename != '':
+            try:
+                # Cloudinary-ലേക്ക് പ്രൊഫൈൽ ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യുന്നു
+                upload_result = cloudinary.uploader.upload(
+                    photo, 
+                    folder="brinshell_profiles"
+                )
+                user.profile_photo = upload_result.get('secure_url')
+            except Exception as e:
+                print(f"Error uploading photo: {e}")
+                
+        db.session.commit()
+        return redirect(url_for('profile'))
+        
+    return render_template('profile.html', user=user)
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if session.get('user_email') != 'adiyychalakkal5@gmail.com': return "Access Denied!"
