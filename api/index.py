@@ -335,7 +335,57 @@ def login():
             return render_template('login.html', error="Invalid OTP! Please try again.", email=email_hidden, otp_sent=True)
             
     return render_template('login.html', otp_sent=False)
+# --- FORGOT PASSWORD ROUTES ---
 
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        user = User.query.filter_by(email=email).first()
+        
+        if user:
+            # പുതിയ OTP ഉണ്ടാക്കുന്നു
+            import random
+            otp = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+            user.otp = otp
+            db.session.commit()
+            
+            # OTP ഇമെയിൽ അയക്കുന്നു
+            try:
+                msg = Message('Password Reset OTP - BRIN SHELL', sender=app.config['MAIL_USERNAME'], recipients=[email])
+                msg.body = f"Hello,\n\nYour OTP to reset the BRIN SHELL account password is: {otp}\n\nIf you didn't request this, please ignore this email."
+                mail.send(msg)
+            except Exception as e:
+                print(f"Mail error: {e}")
+            
+            session['reset_email'] = email
+            return redirect(url_for('reset_password_otp'))
+        else:
+            return "Email not found in our database. Please check and try again."
+            
+    return render_template('forgot_password.html')
+
+@app.route('/reset-password-otp', methods=['GET', 'POST'])
+def reset_password_otp():
+    email = session.get('reset_email')
+    if not email:
+        return redirect(url_for('forgot_password'))
+        
+    if request.method == 'POST':
+        otp = request.form.get('otp')
+        new_password = request.form.get('new_password')
+        
+        user = User.query.filter_by(email=email).first()
+        if user and user.otp == otp:
+            user.password = generate_password_hash(new_password)
+            user.otp = None  # OTP ഉപയോഗിച്ച ശേഷം കളയുന്നു
+            db.session.commit()
+            session.pop('reset_email', None)
+            return redirect(url_for('login')) # പാസ്‌വേഡ് മാറ്റി ലോഗിൻ പേജിലേക്ക് പോകുന്നു
+        else:
+            return "Invalid OTP. Please try again."
+            
+    return render_template('reset_password.html', email=email)
 @app.route('/checkout/<plan>')
 def checkout(plan):
     user = check_auth()
