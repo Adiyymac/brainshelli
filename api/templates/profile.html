@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BRIN SHELL - My Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .bg-theme-main { background-color: #0b5e5a; } 
+        .text-theme-main { color: #0b5e5a; }
+        
+        body {
+            background: linear-gradient(135deg, #0b5e5a 0%, #114e4b 50%, #064e3b 100%);
+        }
+        
+        .glass-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="text-gray-800 min-h-screen flex items-center justify-center p-4">
+    
+    <div class="glass-box p-8 sm:p-10 rounded-3xl w-full max-w-md relative overflow-hidden">
+        
+        <!-- Header -->
+        <div class="text-center mb-8 relative z-10">
+            <h2 class="text-3xl font-extrabold tracking-tight text-theme-main">My Profile</h2>
+            <p class="text-sm text-gray-500 mt-2">{{ user.email }}</p>
+        </div>
+        
+        <!-- Profile Form (enctype="multipart/form-data" is required for photo upload) -->
+        <form method="POST" enctype="multipart/form-data" class="relative z-10">
+            
+            <!-- Photo Preview -->
+            <div class="flex justify-center mb-6">
+                <div class="relative w-24 h-24 rounded-full overflow-hidden border-4 border-teal-100 shadow-md bg-gray-200">
+                    {% if user.profile_photo %}
+                        <img src="{{ user.profile_photo }}" alt="Profile" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center text-3xl text-gray-500 font-bold uppercase">
+                            {{ user.profile_name[0] if user.profile_name else 'S' }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Upload Photo -->
+            <div class="mb-5">
+                <label class="block text-gray-600 text-sm font-semibold mb-2">Change Profile Photo</label>
+                <input type="file" name="profile_photo" accept="image/*" class="w-full p-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 transition cursor-pointer">
+            </div>
+
+            <!-- Name -->
+            <div class="mb-5">
+                <label class="block text-gray-600 text-sm font-semibold mb-2">Your Name</label>
+                <input type="text" name="profile_name" value="{{ user.profile_name }}" class="w-full p-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-600 transition">
+            </div>
+            
+            <!-- New Password -->
+            <div class="mb-8">
+                <label class="block text-gray-600 text-sm font-semibold mb-2">New Password <span class="text-gray-400 font-normal">(Optional)</span></label>
+                <input type="password" name="password" placeholder="Leave blank to keep current password" class="w-full p-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-600 transition">
+            </div>
+            
+            <!-- Save Button -->
+            <button type="submit" class="w-full bg-theme-main hover:bg-teal-800 text-white p-3.5 rounded-xl font-bold tracking-wide transition shadow-lg shadow-teal-900/30 mb-4">
+                Save Changes
+            </button>
+            
+            <!-- Back Link -->
+            <div class="text-center">
+                <a href="/dashboard" class="text-teal-600 hover:text-teal-800 font-semibold text-sm transition">← Back to Dashboard</a>
+            </div>
+        </form>
+        
+    </div>
+</body>
+</html>
